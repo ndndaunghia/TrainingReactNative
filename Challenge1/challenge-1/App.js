@@ -23,18 +23,6 @@ export default function App() {
       <View style={styles.header}>
         <Text style={styles.title}>Fruits List</Text>
       </View>
-      {/* <View style={styles.inputWrapper}>
-        <TextInput
-          style={styles.inputField}
-          placeholder="Add fruits"
-          value={newFruit}
-          onChangeText={(newFruit) => setNewFruit(newFruit)}
-        />
-        <TouchableOpacity>
-          <Ionicons name="add" size="25" onPress={handleSubmit} />
-        </TouchableOpacity>
-      </View> */}
-    
       <ListFruits />
     </View>
   );

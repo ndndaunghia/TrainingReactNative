@@ -6,12 +6,10 @@ import base64 from 'react-native-base64';
 
 const API_URL = 'https://api.github.com/repos/minhnguyenit14/mockend/readme';
 const RANDOM_IMAGE = 'https://images.dog.ceo/breeds/setter-english/n02100735_5978.jpg';
-let newListFruits = [];
+
 export default function ListFruits() {
   const [dataFruits, setDataFruits] = useState();
   const [newFruit, setNewFruit] = useState('');
-  const [data, setData] = useState({});
-
  
   useEffect(() => {
     fetch(API_URL)
@@ -36,6 +34,10 @@ export default function ListFruits() {
     else 
       return;
   };
+
+  const handleDelete = (index) => {
+    dataFruits.splice(index, 1);
+  }
   
   return (
     <SafeAreaView>

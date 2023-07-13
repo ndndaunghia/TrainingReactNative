@@ -3,6 +3,10 @@ import React from 'react';
 import Feather from 'react-native-vector-icons/Feather';
 
 export default function Fruit(props) {
+  const handleDelete = () => {
+    props.deleteItem(props.imageUrl);
+  };
+ 
   return (
     <View style={styles.fruitContainer}>
       <View style={styles.fruitItem}>
@@ -12,7 +16,7 @@ export default function Fruit(props) {
         />
         <Text style={styles.fruitContent}>{props.name}</Text>
       </View>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={handleDelete}>
         <Feather name="trash" size="25" style={styles.icon}/>
       </TouchableOpacity>
     </View>

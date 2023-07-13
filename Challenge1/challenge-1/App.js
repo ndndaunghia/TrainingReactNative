@@ -10,35 +10,20 @@ import {
 import base64 from 'react-native-base64';
 import ListFruits from './ListFruits/ListFruits';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import Fruit from './ListFruits/Fruits/Fruit';
 
 const API_URL = 'https://api.github.com/repos/minhnguyenit14/mockend/readme';
 const RANDOM_IMAGE = 'https://images.dog.ceo/breeds/setter-english/n02100735_5978.jpg';
 let newListFruits = [];
 
 export default function App() {
-  const [newFruit, setNewFruit] = useState('');
-  const [data, setData] = useState({});
-
-
-  const handleSubmit = () => {
-    if(newFruit.trim() !== ""){
-      setData({name: newFruit, imageUrl: RANDOM_IMAGE});
-      // console.log(data);
-      newListFruits.push(data);
-      console.log(newListFruits);
-      setNewFruit("");
-    }
-    else 
-      return;
-  };
-  
 
   return (
     <View>
       <View style={styles.header}>
         <Text style={styles.title}>Fruits List</Text>
       </View>
-      <View style={styles.inputWrapper}>
+      {/* <View style={styles.inputWrapper}>
         <TextInput
           style={styles.inputField}
           placeholder="Add fruits"
@@ -48,7 +33,8 @@ export default function App() {
         <TouchableOpacity>
           <Ionicons name="add" size="25" onPress={handleSubmit} />
         </TouchableOpacity>
-      </View>
+      </View> */}
+    
       <ListFruits />
     </View>
   );

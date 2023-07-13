@@ -13,7 +13,7 @@ export default function Fruit(props) {
         <Text style={styles.fruitContent}>{props.name}</Text>
       </View>
       <TouchableOpacity>
-        <Feather name="trash" style={styles.icon} size="25" />
+        <Feather name="trash" size="25" style={styles.icon}/>
       </TouchableOpacity>
     </View>
   );

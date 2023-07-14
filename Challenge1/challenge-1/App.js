@@ -10,7 +10,7 @@ import ListFruits from './ListFruits/ListFruits';
 export default function App() {
 
   return (
-    <View>
+    <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Fruits List</Text>
       </View>
@@ -22,9 +22,9 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    // backgroundColor: '#fff',
+    // alignItems: 'center',
+    // justifyContent: 'center',
   },
   header: {
     paddingHorizontal: 40,

@@ -4,7 +4,6 @@ import {
   TextInput,
   ScrollView,
   TouchableOpacity,
-  SafeAreaView,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -48,11 +47,10 @@ export default function ListFruits() {
     }
   };
 
-  const handleDeleteFruit = (imageUrl) => {
-    const updatedFruits = dataFruits.filter(
-      (fruit) => fruit.imageUrl !== imageUrl
-    );
-    setDataFruits(updatedFruits);
+  const handleDeleteFruit = (index) => {
+    const updateFruit = [...dataFruits];
+    updateFruit.splice(index, 1);
+    setDataFruits(updateFruit);
   };
 
   return (
@@ -65,9 +63,10 @@ export default function ListFruits() {
           onChangeText={(newFruit) => setNewFruit(newFruit)}
         />
         <TouchableOpacity>
-          <Ionicons name="add" size="25" onPress={handleSubmit} />
+          <Ionicons name="add" size={25} onPress={handleSubmit} />
         </TouchableOpacity>
       </View>
+
       <ScrollView style={styles.container}>
         {Array.isArray(dataFruits)
           ? dataFruits.map((fruit, index) => {
@@ -75,6 +74,7 @@ export default function ListFruits() {
                 <Fruit
                   key={index}
                   name={fruit.name}
+                  index={index}
                   imageUrl={fruit.imageUrl}
                   deleteItem={handleDeleteFruit}
                 />
@@ -88,8 +88,9 @@ export default function ListFruits() {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     paddingHorizontal: 30,
-    paddingVertical: 40,
+    marginTop: 15,
   },
   inputWrapper: {
     flexDirection: "row",

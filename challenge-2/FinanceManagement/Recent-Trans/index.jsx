@@ -25,12 +25,12 @@ const dataUser = [
   },
   {
     img: userImg,
-    top: 230,
-    left: 230,
+    top: 240,
+    left: 240,
   },
   {
     img: userImg,
-    top: 230,
+    top: 240,
     left: 80,
   },
 ];
@@ -74,6 +74,7 @@ export default function RecentTrans(props) {
                 return (
                   <View
                     style={[styles.tabItem, { backgroundColor: "#333474" }]}
+                    key={index}
                   >
                     <Text style={[styles.tabContent, { color: "#ffff" }]}>
                       {item.name}
@@ -82,7 +83,7 @@ export default function RecentTrans(props) {
                 );
               } else {
                 return (
-                  <View style={[styles.tabItem, { backgroundColor: "#ffff" }]}>
+                  <View style={[styles.tabItem, { backgroundColor: "#ffff" }]} key={index}>
                     <Text style={[styles.tabContent, { color: "#333474" }]}>
                       {item.name}
                     </Text>
@@ -145,6 +146,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f1f6fe",
+    // paddingBottom: 10
   },
   mainWrapper: {
     paddingHorizontal: 14,
@@ -255,7 +257,7 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     position: "absolute",
-    borderRadius: 100,
+    borderRadius: '150%',
     borderWidth: 10,
     borderColor: "#c9d8f6",
   },
@@ -263,7 +265,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: 250,
     height: 250,
-    borderRadius: "50%",
+    borderRadius: "250%",
     borderWidth: 1,
     borderColor: "#c9d8f6",
   },
@@ -277,7 +279,7 @@ const styles = StyleSheet.create({
   anotherImg: {
     width: 60,
     height: 60,
-    borderRadius: "50%",
+    borderRadius: 100,
   },
   detailWrapper: {
     backgroundColor: "#333474",

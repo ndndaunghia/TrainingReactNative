@@ -20,7 +20,6 @@ export default class ListFruit extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      text: '',
       fruits: [],
       loading: false,
     };
@@ -42,25 +41,24 @@ export default class ListFruit extends Component {
       });
   }
 
-  async handleAdd() {
+  handleAdd = (text) => {
     this.setState({ loading: true });
-    if (this.state.text.trim() !== '') {
-      try {
-        const response = await fetch(RANDOM_IMAGE);
-        this.setState({ loading: false });
-        const randomImg = response.url;
-        const updateFruits = [...this.state.fruits];
-        updateFruits.unshift({
-          name: this.state.text,
-          imageUrl: randomImg,
-        });
-        this.setState({ fruits: updateFruits });
-        this.setState({ text: '' });
-      } catch (error) {
+    fetch(RANDOM_IMAGE)
+      .then((response) => response.url)
+      .then((randomImg) => {
+        const updatedFruits = [
+          {
+            name: text,
+            imageUrl: randomImg,
+          },
+          ...this.state.fruits,
+        ];
+        this.setState({ fruits: updatedFruits, loading: false });
+      })
+      .catch((error) => {
         console.log(error);
-      }
-    } else return;
-  }
+      });
+  };
 
   handleRemove(index) {
     const updateFruits = [...this.state.fruits];
@@ -73,18 +71,7 @@ export default class ListFruit extends Component {
 
     return (
       <View style={styles.container}>
-        {/* <View style={styles.inputWrapper}>
-          <TextInput
-            style={styles.inputField}
-            placeholder="Add fruits"
-            value={this.state.text}
-            onChangeText={(text) => this.setState({ text })}
-          />
-          <TouchableOpacity onPress={this.handleAdd}>
-            <Ionicons name="add" size={25} />
-          </TouchableOpacity>
-        </View> */}
-        <Input />
+        <Input onAdd={this.handleAdd}/>
         {this.state.loading === true ? (
           <ActivityIndicator size="small" color="#0000ff" />
         ) : null}

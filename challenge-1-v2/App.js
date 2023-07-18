@@ -1,8 +1,6 @@
-import { StatusBar } from 'expo-status-bar';
-import { Keyboard, SafeAreaView, StyleSheet, Text, View } from 'react-native';
-import Fruit from './Components/Fruit';
-import ListFruit from './Components/ListFruit';
 import { Component } from 'react';
+import { Keyboard, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import ListFruit from './Components/ListFruit';
 
 export default class App extends Component {
   state = {
@@ -10,24 +8,24 @@ export default class App extends Component {
   };
   componentDidMount() {
     this.keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
-      this._keyboardDidShow,
+      'keyboardWillShow',
+      this.keyboardDidShow,
     );
     this.keyboardDidHideListener = Keyboard.addListener(
-      'keyboardDidHide',
-      this._keyboardDidHide,
+      'keyboardWillHide',
+      this.keyboardDidHide,
     );
   }
-  componentWillUnmount() {
-    this.keyboardDidShowListener.remove();
-    this.keyboardDidHideListener.remove();
-  }
 
-  _keyboardDidShow = () => {
+  componentWillUnmount() {
+    this.keyboardDidHideListener.remove();
+    this.keyboardDidShowListener.remove();
+  }
+  keyboardDidShow = () => {
     this.setState({ isShowKeyboard: true });
   };
 
-  _keyboardDidHide = () => {
+  keyboardDidHide = () => {
     this.setState({ isShowKeyboard: false });
   };
 

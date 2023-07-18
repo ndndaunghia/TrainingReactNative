@@ -4,6 +4,7 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  Keyboard,
 } from 'react-native';
 import { React, useState } from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -17,7 +18,7 @@ export default function Login(props) {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} onTouchStart={Keyboard.dismiss}>
       <View style={styles.logoWrapper}>
         <View style={styles.logo}>
           <View style={styles.logoInside}></View>
@@ -35,28 +36,17 @@ export default function Login(props) {
           <Text style={styles.label}>Password</Text>
           <View style={styles.inputWrapper}>
             <AntDesign name="lock" size={20} style={styles.icon} />
-            {showPassword ? (
-              <>
-                <TextInput
-                  style={styles.input}
-                  secureTextEntry={false}></TextInput>
-                <TouchableOpacity onPress={handleShowPassword}>
-                  <Feather name="eye-off" size={20} />
-                </TouchableOpacity>
-              </>
-            ) : (
-              <>
-                <TextInput
-                  style={styles.input}
-                  secureTextEntry={true}></TextInput>
-                <TouchableOpacity onPress={handleShowPassword}>
-                  <Feather name="eye" size={20} />
-                </TouchableOpacity>
-              </>
-            )}
+            <TextInput
+              style={styles.input}
+              secureTextEntry={showPassword ? false : true}></TextInput>
+            <TouchableOpacity onPress={handleShowPassword}>
+              <Feather name={showPassword ? 'eye-off' : 'eye'} size={20} />
+            </TouchableOpacity>
           </View>
         </View>
-        <TouchableOpacity style={styles.loginWrapper} onPress={props.handleOnPress}>
+        <TouchableOpacity
+          style={styles.loginWrapper}
+          onPress={props.handleOnPress}>
           <Text style={styles.loginTxt}>Login</Text>
         </TouchableOpacity>
         <View style={styles.navigate}>

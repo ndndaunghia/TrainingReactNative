@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
+  Keyboard,
 } from 'react-native';
 import React, { Component } from 'react';
 import Fruit from './Fruit';
@@ -15,30 +16,60 @@ import Input from './Input';
 
 const API_URL = 'https://api.github.com/repos/minhnguyenit14/mockend/readme';
 const RANDOM_IMAGE = 'https://random.imagecdn.app/500/150';
+const USER_URL = 'https://jsonplaceholder.typicode.com/users';
 
 export default class ListFruit extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      fruits: [],
-      loading: false,
-    };
-    this.handleAdd = this.handleAdd.bind(this);
-    this.handleRemove = this.handleRemove.bind(this);
-  }
+  state = {
+    fruits: [],
+    loading: false,
+  };
+  isUnmounted = false;
+  fetchTimeoutId = -1;
+  controller = new AbortController();
+  signal = this.controller.signal;
 
   componentDidMount() {
-    fetch(API_URL)
+    // fetch(API_URL)
+    //   .then(async (res) => {
+    //     const json = await res.json();
+    //     const replaceJson = json.content.replace(/\n/g, '');
+    //     const data = base64.decode(replaceJson);
+    //     const convertJson = JSON.parse(data);
+    //     this.setState({ fruits: convertJson.fruits });
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
+
+    fetch(USER_URL, { signal: this.signal })
       .then(async (res) => {
-        const json = await res.json();
-        const replaceJson = json.content.replace(/\n/g, '');
-        const data = base64.decode(replaceJson);
-        const convertJson = JSON.parse(data);
-        this.setState({ fruits: convertJson.fruits });
+        const response = await res.json();
+        this.setState({
+          fruits: response.map((item) => ({
+            id: Date.now(),
+            ...item,
+          })),
+        });
+        // this.fetchTimeoutId = setTimeout(() => {
+        // if (this.isUnmounted) {
+        //   return;
+        // }
+
+        //   () => {
+        //     console.log(this.state);
+        //   },
+        // );
+        // }, 3000);
       })
       .catch((error) => {
         console.log(error);
       });
+  }
+
+  componentWillUnmount() {
+    this.isUnmounted = true;
+    clearTimeout(this.fetchTimeoutId);
+    this.controller.abort();
   }
 
   handleAdd = (text) => {
@@ -46,49 +77,56 @@ export default class ListFruit extends Component {
     fetch(RANDOM_IMAGE)
       .then((response) => response.url)
       .then((randomImg) => {
-        const updatedFruits = [
-          {
-            name: text,
-            imageUrl: randomImg,
-          },
-          ...this.state.fruits,
-        ];
-        this.setState({ fruits: updatedFruits, loading: false });
+        this.setState((prevState) => {
+          const updatedFruits = [
+            {
+              name: text,
+              imageUrl: randomImg,
+            },
+            ...prevState.fruits,
+          ];
+
+          return { fruits: updatedFruits, loading: false };
+        });
       })
       .catch((error) => {
         console.log(error);
+      })
+      .finally(() => {
+        this.setState({ loading: false });
       });
   };
 
-  handleRemove(index) {
-    const updateFruits = [...this.state.fruits];
-    updateFruits.splice(index, 1);
-    this.setState({fruits: updateFruits})
-  }
-
+  handleRemove = (index) => {
+    if (this.state.loading === false) {
+      this.setState((prevState) => {
+        const updateFruits = [...prevState.fruits];
+        updateFruits.splice(index, 1);
+        return { fruits: updateFruits };
+      });
+    }
+  };
 
   render() {
-
     return (
       <View style={styles.container}>
-        <Input onAdd={this.handleAdd}/>
-        {this.state.loading === true ? (
+        <Input onAdd={this.handleAdd} />
+        {this.state.loading && (
           <ActivityIndicator size="small" color="#0000ff" />
-        ) : null}
-        <ScrollView style={styles.scroll}>
-          {Array.isArray(this.state.fruits)
-            ? this.state.fruits.map((item, index) => {
-                return (
-                  <Fruit
-                    name={item.name}
-                    imageUrl={item.imageUrl}
-                    key={index}
-                    index={index}
-                    removeItem={this.handleRemove}
-                  />
-                );
-              })
-            : null}
+        )}
+        <ScrollView
+          style={styles.listContainer}
+          keyboardDismissMode="interactive">
+          {this.state.fruits.map((item, index) => {
+            return (
+              <Fruit
+                key={index}
+                name={item.name}
+                imageUrl={item.imageUrl}
+                removeItem={() => this.handleRemove(index)}
+              />
+            );
+          })}
         </ScrollView>
       </View>
     );
@@ -101,24 +139,7 @@ const styles = StyleSheet.create({
     // paddingHorizontal: 30,
     marginTop: 15,
   },
-  inputWrapper: {
-    flexDirection: 'row',
-    gap: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 30,
-    paddingHorizontal: 30
+  listContainer: {
+    paddingHorizontal: 30,
   },
-  inputField: {
-    height: 50,
-    borderWidth: 1,
-    borderColor: 'black',
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    flexGrow: 2,
-    color: 'black',
-  },
-  scroll: {
-    paddingHorizontal: 30
-  }
 });

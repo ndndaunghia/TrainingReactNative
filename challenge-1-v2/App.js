@@ -1,17 +1,51 @@
 import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { Keyboard, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import Fruit from './Components/Fruit';
 import ListFruit from './Components/ListFruit';
+import { Component } from 'react';
 
-export default function App() {
-  return (
-    <SafeAreaView style={styles.container}>
-     <View style={styles.header}>
-        <Text style={styles.title}>Fruits List</Text>
-      </View>
-      <ListFruit/>
-    </SafeAreaView>
-  );
+export default class App extends Component {
+  state = {
+    isShowKeyboard: false,
+  };
+  componentDidMount() {
+    this.keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      this._keyboardDidShow,
+    );
+    this.keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      this._keyboardDidHide,
+    );
+  }
+  componentWillUnmount() {
+    this.keyboardDidShowListener.remove();
+    this.keyboardDidHideListener.remove();
+  }
+
+  _keyboardDidShow = () => {
+    this.setState({ isShowKeyboard: true });
+  };
+
+  _keyboardDidHide = () => {
+    this.setState({ isShowKeyboard: false });
+  };
+
+  render() {
+    return (
+      <SafeAreaView
+        style={[
+          styles.container,
+          this.state.isShowKeyboard && { opacity: 0.6 },
+        ]}
+        onTouchStart={Keyboard.dismiss}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Fruits List</Text>
+        </View>
+        <ListFruit />
+      </SafeAreaView>
+    );
+  }
 }
 
 const styles = StyleSheet.create({

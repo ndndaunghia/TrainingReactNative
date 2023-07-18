@@ -3,11 +3,28 @@ import React, { Component } from 'react';
 import Feather from 'react-native-vector-icons/Feather';
 
 export default class Fruit extends Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    if (
+      nextProps.name !== this.props.name ||
+      nextProps.imageUrl !== this.props.imageUrl
+    ) {
+      return true;
+    }
+
+    if (nextState !== this.state) {
+      return true;
+    }
+
+    return false;
+  }
+
   handleRemoveItem = () => {
-    this.props.removeItem(this.props.index);
+    this.props.removeItem();
   };
+
   render() {
-    const { name, imageUrl} = this.props;
+    // alert();
+    const { name, imageUrl } = this.props;
     // console.log('name', name)
     return (
       <View style={styles.fruitContainer}>
@@ -39,7 +56,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     flexDirection: 'row',
-    flexGrow: 1,
+    flex: 1,
     justifyContent: 'space-around',
   },
 

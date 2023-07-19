@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Login from './Login';
 import Profile from './Profile';
-import RecentTrans from './Recent-Trans';
+import RecentTrans from './RecentTransactions';
 
 export default function FinanceManagement() {
   const [login, setLogin] = useState(true);
@@ -49,7 +49,8 @@ export default function FinanceManagement() {
         />
       );
     } else if (recentTrans) {
-      return <RecentTrans handleBackProfile={handleBackToProfile} />;
+      // return <RecentTrans handleBackProfile={handleBackToProfile} />;
+      return <RecentTrans handleBackProfile={handleBackToProfile}/>
     }
   };
 

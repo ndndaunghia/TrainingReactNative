@@ -1,16 +1,9 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import Login from './FinanceManagement/Login';
-import Profile from './FinanceManagement/Profile';
-import FinanceManagement from './FinanceManagement/FinanceManagement';
-import RecentTrans from './FinanceManagement/Recent-Trans';
+import { StyleSheet } from 'react-native';
+import FinanceManagement from './FinanceManagement';
 
 export default function App() {
   return (
-
-    <FinanceManagement/>
-    // <RecentTrans/>
-
+    <FinanceManagement />
   );
 }
 

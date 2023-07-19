@@ -1,63 +1,31 @@
-import { View, Text, StyleSheet, SafeAreaView, Image, TouchableOpacity } from "react-native";
-import React from "react";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-
-
-const userImg =
-  "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=880&q=80";
-
-const dataUser = [
-  {
-    img: userImg,
-    top: 10,
-    left: 150,
-  },
-  {
-    img: userImg,
-    top: 100,
-    left: 30,
-  },
-  {
-    img: userImg,
-    top: 100,
-    left: 270,
-  },
-  {
-    img: userImg,
-    top: 240,
-    left: 240,
-  },
-  {
-    img: userImg,
-    top: 240,
-    left: 80,
-  },
-];
-
-const tabs = [
-  {
-    id: "1",
-    name: "All",
-  },
-  {
-    id: "2",
-    name: "Income",
-  },
-  {
-    id: "3",
-    name: "Expense",
-  },
-];
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
+import React, { useState } from 'react';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { mainColor } from '../../assets/config';
+import { backgroundColor, userImg, dataUser, tabs } from '../../assets/config';
 
 export default function RecentTrans(props) {
- 
+  
+  const [tabActive, setTabActive] = useState(0);
+
+  const handleActiveTab = (index) => {
+    setTabActive(index);
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.mainWrapper}>
         <View style={styles.topPart}>
           <View style={styles.headerNav}>
-            <TouchableOpacity onPress={props.hanleBackProfile}>
+            <TouchableOpacity onPress={props.handleBackProfile}>
               <AntDesign name="back" size={20} />
             </TouchableOpacity>
             <TouchableOpacity>
@@ -66,41 +34,42 @@ export default function RecentTrans(props) {
           </View>
           <View style={styles.title}>
             <Text style={styles.mainTitle}>Recent Transactions</Text>
-            <Text style={styles.subTitle}>See all</Text>
+           <TouchableOpacity>
+           <Text style={styles.subTitle}>See all</Text>
+           </TouchableOpacity>
           </View>
           <View style={styles.tabs}>
             {tabs.map((item, index) => {
-              if (index === 0) {
-                return (
-                  <View
-                    style={[styles.tabItem, { backgroundColor: "#333474" }]}
-                    key={index}
+              return (
+                <TouchableOpacity key={index} onPress={() => handleActiveTab(index)}> 
+                <View
+                  style={[
+                    styles.tabItem,
+                    index === tabActive && { backgroundColor: `${mainColor}` },
+                  ]}
                   >
-                    <Text style={[styles.tabContent, { color: "#ffff" }]}>
-                      {item.name}
-                    </Text>
-                  </View>
-                );
-              } else {
-                return (
-                  <View style={[styles.tabItem, { backgroundColor: "#ffff" }]} key={index}>
-                    <Text style={[styles.tabContent, { color: "#333474" }]}>
-                      {item.name}
-                    </Text>
-                  </View>
-                );
-              }
+                  <Text
+                    style={[
+                      styles.tabContent,
+                      index === tabActive && { color: '#ffff' },
+                    ]}>
+                    {item.name}
+                  </Text>
+                </View>
+                </TouchableOpacity>
+              );
             })}
           </View>
-          <View style={styles.day}>
-            <Text style={styles.dayContent}>Today</Text>
+          <View style={styles.date}>
+            <Text style={styles.dateContent}>Today</Text>
           </View>
-          <View style={styles.history}>
+         <TouchableOpacity>
+         <View style={styles.history}>
             <View style={styles.actionWrapper}>
               <FontAwesome
                 name="envelope-open-o"
                 size={25}
-                style={{ marginTop: 12, color: "#333474" }}
+                style={{ marginTop: 8, color: `${mainColor}` }}
               />
               <View style={styles.action}>
                 <Text style={styles.actionTitle}>Payment</Text>
@@ -108,9 +77,10 @@ export default function RecentTrans(props) {
               </View>
             </View>
             <View style={styles.money}>
-              <Text style={styles.monenyNumber}>$30.000</Text>
+              <Text style={styles.totalMoney}>$30.00</Text>
             </View>
           </View>
+         </TouchableOpacity>
         </View>
         <View style={{ flex: 1 }}>
           <View style={styles.bottomPart}>
@@ -126,8 +96,7 @@ export default function RecentTrans(props) {
                     styles.anotherUser,
                     { top: item.top, left: item.left },
                   ]}
-                  key={index}
-                >
+                  key={index}>
                   <Image source={{ uri: item.img }} style={styles.anotherImg} />
                 </View>
               );
@@ -145,7 +114,7 @@ export default function RecentTrans(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f1f6fe",
+    backgroundColor: `${backgroundColor}`,
     // paddingBottom: 10
   },
   mainWrapper: {
@@ -157,68 +126,71 @@ const styles = StyleSheet.create({
   },
   bottomPart: {
     flex: 2,
-    justifyContent: "center",
-    alignItems: "center",
-    position: "relative",
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
   },
   headerNav: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   title: {
-    marginTop: 12,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    marginTop: 16,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   mainTitle: {
-    color: "#333474",
-    fontSize: 16,
+    color: `${mainColor}`,
+    fontSize: 20,
     fontWeight: 700,
   },
   subTitle: {
     fontSize: 14,
-    color: "#333474",
+    color: `${mainColor}`,
   },
   tabs: {
-    flexDirection: "row",
+    flexDirection: 'row',
     gap: 10,
-    marginTop: 12,
+    marginTop: 24,
   },
   tabItem: {
     paddingHorizontal: 14,
     paddingVertical: 4,
     borderRadius: 15,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#ffff',
   },
   tabContent: {
     fontWeight: 600,
+    color: `${mainColor}`,
   },
-  day: {
-    marginTop: 12,
+  date: {
+    marginTop: 24,
   },
-  dayContent: {
-    color: "#333474",
+  dateContent: {
+    fontSize: 18,
+    color: `${mainColor}`,
     fontWeight: 700,
   },
   history: {
-    marginTop: 12,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: "#ffff",
-    paddingHorizontal: 12,
-    paddingVertical: 12,
+    marginTop: 24,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#ffff',
+    paddingHorizontal: 16,
+    paddingVertical: 20,
     borderRadius: 15,
-    shadowColor: "#8a8787",
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.4,
-    shadowRadius: 5,
+    shadowColor: '#d3dcf0',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.8,
+    shadowRadius: 10,
   },
   actionWrapper: {
-    flexDirection: "row",
+    flexDirection: 'row',
     gap: 14,
   },
   actionTitle: {
@@ -227,13 +199,13 @@ const styles = StyleSheet.create({
   },
   actionContent: {
     fontSize: 12,
-    color: "#333474",
+    color: `${mainColor}`,
   },
   money: {
     marginTop: 11,
   },
-  monenyNumber: {
-    color: "#333474",
+  totalMoney: {
+    color: `${mainColor}`,
     fontWeight: 700,
   },
   connection: {
@@ -242,10 +214,10 @@ const styles = StyleSheet.create({
     // backgroundColor: 'blue',
     borderRadius: 50,
     borderWidth: 2,
-    borderColor: "blue",
-    justifyContent: "center",
-    alignItems: "center",
-    position: "absolute",
+    borderColor: '#6a6f9f',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
     zIndex: 2,
   },
   userImg: {
@@ -254,23 +226,23 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   secondAround: {
-    width: 150,
-    height: 150,
-    position: "absolute",
-    borderRadius: '150%',
-    borderWidth: 10,
-    borderColor: "#c9d8f6",
+    width: 160,
+    height: 160,
+    position: 'absolute',
+    borderRadius: 80,
+    borderWidth: 14,
+    borderColor: '#c9d8f6',
   },
   mainAround: {
-    position: "absolute",
+    position: 'absolute',
     width: 250,
     height: 250,
-    borderRadius: "250%",
+    borderRadius: '250%',
     borderWidth: 1,
-    borderColor: "#c9d8f6",
+    borderColor: '#c9d8f6',
   },
   anotherUser: {
-    position: "absolute",
+    position: 'absolute',
     width: 60,
     height: 60,
     // top: 10,
@@ -282,14 +254,14 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   detailWrapper: {
-    backgroundColor: "#333474",
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: `${mainColor}`,
+    justifyContent: 'center',
+    alignItems: 'center',
     paddingVertical: 10,
     borderRadius: 15,
   },
   detail: {
-    color: "#ffff",
+    color: '#ffff',
     fontWeight: 600,
   },
 });

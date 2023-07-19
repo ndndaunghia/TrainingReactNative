@@ -1,4 +1,3 @@
-import { View, Text } from 'react-native';
 import React, { useState } from 'react';
 import Login from './Login';
 import Profile from './Profile';
@@ -13,25 +12,25 @@ export default function FinanceManagement() {
     setProfile(true);
     setLogin(false);
     setRecentTrans(false);
-  }
+  };
 
   const handleBackLogin = () => {
     setProfile(false);
     setLogin(true);
     setRecentTrans(false);
-  }
+  };
 
   const handleShowRecentTrans = () => {
     setRecentTrans(true);
     setProfile(false);
     setLogin(false);
-  }
+  };
 
   const handleBackToProfile = () => {
     setLogin(false);
     setProfile(true);
     setRecentTrans(false);
-  }
+  };
 
   const renderScreen = () => {
     // if (login) {
@@ -39,14 +38,18 @@ export default function FinanceManagement() {
     // } else {
     //   return <Profile handleBack={handleBackLogin}/>;
     // }
-    if(login) {
-      return <Login handleOnPress={handleShowProfile}/>
-    }
-    else if(profile) {
-      return <Profile handleBackToLogin={handleBackLogin} handleNextToRecentTrans={handleShowRecentTrans}/>
-    }
-    else if (recentTrans) {
-      return <RecentTrans hanleBackProfile={handleBackToProfile}/>
+    if (login) {
+      return <Login handleOnPress={handleShowProfile} />;
+    } else if (profile) {
+      return (
+        <Profile
+          handleBackToLogin={handleBackLogin}
+          handleNextToRecentTrans={handleShowRecentTrans}
+          
+        />
+      );
+    } else if (recentTrans) {
+      return <RecentTrans handleBackProfile={handleBackToProfile} />;
     }
   };
 

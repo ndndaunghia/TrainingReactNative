@@ -6,70 +6,25 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
-const userImg =
-  'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=880&q=80';
+import { backgroundColor } from '../../assets/config';
+import {
+  mainColor,
+  userImg,
+  money,
+  overView,
+  navigateItem,
+} from '../../assets/config';
 
 export default function Profile(props) {
-  const money = [
-    {
-      number: '$8900',
-      desc: 'Income',
-    },
-    {
-      number: '$5500',
-      desc: 'Expenses',
-    },
-    {
-      number: '$890',
-      desc: 'Loan',
-    },
-  ];
-
-  const overView = [
-    {
-      icon: 'arrow-up',
-      action: 'Sent',
-      des: 'Sending Payments to Clients',
-      money: '$150',
-    },
-    {
-      icon: 'arrow-down',
-      action: 'Receive',
-      des: 'Received Salary from company',
-      money: '$250',
-    },
-    {
-      icon: 'money',
-      action: 'Loan',
-      des: 'Loan for the car',
-      money: '$400',
-    },
-  ];
-
-  const navigateItem = [
-    {
-      icon: 'home',
-    },
-    {
-      icon: 'credit-card',
-    },
-    {
-      icon: 'plus',
-    },
-    {
-      icon: 'dollar',
-    },
-    {
-      icon: 'user-o',
-    },
-  ];
-
+  const [navigateActive, setNavigateActive] = useState(4);
+  const handleChangeActive = (index) => {
+    setNavigateActive(index);
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.userInformationWrapper}>
@@ -88,21 +43,22 @@ export default function Profile(props) {
             <Text style={styles.job}>UX/UI Designer</Text>
             <View style={styles.wage}>
               {money.map((item, index) => {
-               return (
-                <View
-                  key={index}
-                  style={[
-                    styles.wageItem,
-                    index === 1 && {
-                      borderLeftWidth: 1,
-                      borderRightWidth: 1,
-                      borderColor: '#ccc8c8',
-                    },
-                  ]}>
-                  <Text style={styles.number}>{item.number}</Text>
-                  <Text style={styles.desc}>{item.desc}</Text>
-                </View>
-               )
+                return (
+                  <TouchableOpacity key={index}>
+                    <View
+                      style={[
+                        styles.wageItem,
+                        index === 1 && {
+                          borderLeftWidth: 1,
+                          borderRightWidth: 1,
+                          borderColor: '#ccc8c8',
+                        },
+                      ]}>
+                      <Text style={styles.number}>{item.number}</Text>
+                      <Text style={styles.desc}>{item.desc}</Text>
+                    </View>
+                  </TouchableOpacity>
+                );
               })}
             </View>
           </View>
@@ -119,18 +75,22 @@ export default function Profile(props) {
 
         {overView.map((item, index) => {
           return (
-            <View style={styles.overviewItem} key={index}>
-              <View style={styles.actionWrapper}>
-                <View style={styles.actionBtn}>
-                  <FontAwesome name={item.icon} />
+            <TouchableOpacity
+              onPress={props.handleNextToRecentTrans}
+              key={index}>
+              <View style={styles.overviewItem}>
+                <View style={styles.actionWrapper}>
+                  <View style={styles.actionBtn}>
+                    <FontAwesome name={item.icon} />
+                  </View>
+                  <View style={styles.actionDescWrapper}>
+                    <Text style={styles.actionDesc}>{item.action}</Text>
+                    <Text style={styles.actionDesText}>{item.des}</Text>
+                  </View>
                 </View>
-                <View style={styles.actionDescWrapper}>
-                  <Text style={styles.actionDesc}>{item.action}</Text>
-                  <Text style={styles.actionDesText}>{item.des}</Text>
-                </View>
+                <Text styles={styles.overviewMoney}>{item.money}</Text>
               </View>
-              <Text styles={styles.overviewMoney}>{item.money}</Text>
-            </View>
+            </TouchableOpacity>
           );
         })}
       </View>
@@ -138,9 +98,17 @@ export default function Profile(props) {
         {navigateItem.map((item, index) => {
           return (
             <TouchableOpacity
-              onPress={props.handleNextToRecentTrans}
-              key={index}>
-              <FontAwesome name={item.icon} size={20} />
+              key={index}
+              onPress={() => handleChangeActive(index)}
+              style={item.icon === 'plus' && styles.mainBtnWrapper}>
+              <FontAwesome
+                name={item.icon}
+                size={20}
+                style={
+                  (item.icon === 'plus' && { color: '#ffff', fontSize: 12 }) ||
+                  (index === navigateActive && { color: 'blue' })
+                }
+              />
             </TouchableOpacity>
           );
         })}
@@ -150,17 +118,17 @@ export default function Profile(props) {
 }
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#f1f6fe',
+    backgroundColor: `${backgroundColor}`,
     flex: 1,
   },
   userInformationWrapper: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#8a8787',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.4,
-    shadowRadius: 5,
+    shadowColor: '#d3dcf0',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.8,
+    shadowRadius: 10,
   },
   userInformation: {
     width: 340,
@@ -186,7 +154,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 600,
     marginTop: 10,
-    color: '#333474',
+    color: `${mainColor}`,
   },
   job: {
     fontSize: 14,
@@ -197,14 +165,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   wageItem: {
-    backgroundColor: '#f2f2f2',
+    // backgroundColor: '#f2f2f2',
     padding: 12,
     justifyContent: 'center',
     alignItems: 'center',
   },
   number: {
     fontSize: 16,
-    color: '#333474',
+    color: `${mainColor}`,
     marginBottom: 6,
   },
   desc: {
@@ -227,10 +195,10 @@ const styles = StyleSheet.create({
   overviewText: {
     fontSize: 18,
     fontWeight: 600,
-    color: '#333474',
+    color: `${mainColor}`,
   },
   time: {
-    color: '#333474',
+    color: `${mainColor}`,
     fontWeight: 600,
   },
   overviewItem: {
@@ -241,17 +209,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     padding: 15,
     borderRadius: 15,
-    shadowColor: '#8a8787',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.4,
-    shadowRadius: 5,
+    shadowColor: '#d3dcf0',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.8,
+    shadowRadius: 10,
   },
+
   actionWrapper: {
     flexDirection: 'row',
     gap: 10,
   },
+
   actionBtn: {
-    backgroundColor: '#d3e7eb',
+    backgroundColor: '#e0e2f8',
     justifyContent: 'center',
     alignItems: 'center',
     width: 40,
@@ -262,5 +232,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     paddingHorizontal: 12,
+  },
+  mainBtnWrapper: {
+    backgroundColor: `${mainColor}`,
+    width: 26,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 6,
+  },
+  mainBtn: {
+    color: '#ffff',
+    fontSize: 12,
   },
 });

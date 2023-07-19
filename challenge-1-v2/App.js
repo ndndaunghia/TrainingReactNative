@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { Keyboard, SafeAreaView, StyleSheet, Text, View } from 'react-native';
-import ListFruit from './Components/ListFruit';
+import ListFruit from './components/ListFruit';
 
 export default class App extends Component {
   state = {

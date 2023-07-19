@@ -9,6 +9,7 @@ import {
 import { React, useState } from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
+import { mainColor, backgroundColor } from '../../assets/config';
 
 export default function Login(props) {
   const [showPassword, setShowPassword] = useState(false);
@@ -28,18 +29,18 @@ export default function Login(props) {
         <View style={styles.inputField}>
           <Text style={styles.label}>Email address</Text>
           <View style={styles.inputWrapper}>
-            <AntDesign name="mail" size={20} style={styles.icon} />
+            <AntDesign name="mail" size={20} />
             <TextInput style={styles.input}></TextInput>
           </View>
         </View>
         <View style={styles.inputField}>
           <Text style={styles.label}>Password</Text>
-          <View style={styles.inputWrapper}>
-            <AntDesign name="lock" size={20} style={styles.icon} />
+          <View style={[styles.inputWrapper]}>
+            <AntDesign name="lock" size={20} />
             <TextInput
               style={styles.input}
-              secureTextEntry={showPassword ? false : true}></TextInput>
-            <TouchableOpacity onPress={handleShowPassword}>
+              secureTextEntry={showPassword ? false : true}/>
+            <TouchableOpacity style={{alignSelf: 'flex-end'}} onPress={handleShowPassword}>
               <Feather name={showPassword ? 'eye-off' : 'eye'} size={20} />
             </TouchableOpacity>
           </View>
@@ -50,8 +51,12 @@ export default function Login(props) {
           <Text style={styles.loginTxt}>Login</Text>
         </TouchableOpacity>
         <View style={styles.navigate}>
-          <Text>Signup</Text>
-          <Text>Forgot password?</Text>
+          <TouchableOpacity>
+            <Text>Signup</Text>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Text>Forgot password?</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -61,7 +66,7 @@ export default function Login(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f1f6fe',
+    backgroundColor: `${backgroundColor}`,
   },
   logoWrapper: {
     flex: 1,
@@ -88,12 +93,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   inputField: {
-    borderRadius: 14,
+    borderRadius: 20,
+    padding: 8,
     marginBottom: 20,
     backgroundColor: '#ffff',
-    shadowColor: '#8a8787',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.4,
+    shadowColor: '#d3dcf0',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.8,
     shadowRadius: 5,
     // elevation: 5
   },
@@ -108,17 +114,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: 14,
     marginVertical: 6,
-    gap: 10,
+    gap: 10
   },
 
   input: {
-    flexGrow: 1,
+    // flexGrow: 1,
+    flex: 1,
     color: 'black',
+    // backgroundColor: 'green'
   },
 
   loginWrapper: {
-    backgroundColor: '#333474',
-    borderRadius: 16,
+    backgroundColor: `${mainColor}`,
+    borderRadius: 24,
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 15,

@@ -26,9 +26,9 @@ import {
 } from '../../assets/config';
 
 const MAIN_WIDTH = 250;
-const SUB_WIDTH = 68;
+const SUB_WIDTH = 62;
 const R = MAIN_WIDTH / 2;
-const BORDER_WIDTH_SUB_USER = 1;
+const BORDER_WIDTH_SUB_USER = 10;
 const angle = (2 * Math.PI) / DATA_USER.length;
 
 export default function RecentTrans(props) {
@@ -42,10 +42,12 @@ export default function RecentTrans(props) {
     const x = R * Math.sin(angle * index);
     const y = R * Math.cos(angle * index);
     return {
-      top: R - SUB_WIDTH / 2 - y - BORDER_WIDTH_SUB_USER ,
-      left: R - SUB_WIDTH / 2 - x - BORDER_WIDTH_SUB_USER,
-      // top: R - SUB_WIDTH / 2 - y ,
-      // left: R - SUB_WIDTH / 2 - x ,
+      top: R - SUB_WIDTH / 2 - y,
+      left: R - SUB_WIDTH / 2 - x,
+      // // top: R - SUB_WIDTH / 2 - y ,
+      // // left: R - SUB_WIDTH / 2 - x ,
+      // top: -SUB_WIDTH / 2 - BORDER_WIDTH_SUB_USER ,
+      // left: R - SUB_WIDTH / 2 - BORDER_WIDTH_SUB_USER,
     };
   };
 
@@ -58,6 +60,65 @@ export default function RecentTrans(props) {
       );
     });
   };
+
+  return (
+    <View
+      style={{
+        width: 200,
+        height: 200,
+        borderWidth: 2,
+        // borderRadius: 100,
+        top: 250,
+        left: 100,
+      }}>
+      <View
+        style={{
+          ...StyleSheet.absoluteFillObject,
+          width: '100%',
+          height: '100%',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <View style={{ height: 20, width: 20, backgroundColor: 'black' }} />
+      </View>
+      {[1, 2, 3, 4, 5].map((_, i) => {
+        const total = 5;
+        const R = 100;
+        const w = 50,
+          r = w / 2,
+          b = 2,
+          B = 2;
+
+          const baseX = R - r - b;
+          const baseY = -r-b + B/2;
+          const angle = 2 * Math.PI / total
+          const x = (B+ b +R) * Math.sin(angle * i);
+          const y = (B+R + b) * Math.cos(angle * i);
+        return (
+          <View
+            style={{
+              position: 'absolute',
+              width: w,
+              height: w,
+              borderRadius: r,
+              borderWidth: 2,
+              justifyContent: 'center',
+              alignItems: 'center',
+              left: baseX -  x,
+              top: baseY + R - B/2 - y,
+            }}>
+            <View
+              style={{
+                width: 10,
+                height: 10,
+                backgroundColor: 'green',
+              }}
+            />
+          </View>
+        );
+      })}
+    </View>
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -120,10 +181,10 @@ export default function RecentTrans(props) {
         </View>
         <View style={styles.bottomPartWrapper}>
           <View style={styles.bottomPart}>
-            <View style={styles.connection}>
+            {/* <View style={styles.connection}>
               <Image source={{ uri: USER_IMG }} style={styles.userImg} />
-            </View>
-            <View style={styles.secondAround}></View>
+            </View> */}
+            {/* <View style={styles.secondAround}></View> */}
             <View style={styles.mainAround}>{renderUser()}</View>
           </View>
         </View>
@@ -274,6 +335,7 @@ const styles = StyleSheet.create({
     borderWidth: 14,
     borderColor: '#c9d8f6',
     backgroundColor: '#ecf4ff',
+    backgroundColor: 'green',
   },
   mainAround: {
     height: MAIN_WIDTH,
@@ -281,24 +343,27 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#c9d8f6',
     borderRadius: R,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 999,
   },
   subUser: {
     position: 'absolute',
     width: SUB_WIDTH,
     height: SUB_WIDTH,
-    borderWidth: 1,
-    borderColor: '#fff',
+    borderWidth: BORDER_WIDTH_SUB_USER,
+    borderColor: 'red',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: SUB_WIDTH / 2,
+    // borderRadius: SUB_WIDTH / 2,
     shadowColor: '#d3dcf0',
     shadowOffset: { width: 10, height: 20 },
     shadowOpacity: 0.9,
     shadowRadius: 10,
   },
   subImg: {
-    width: 62,
-    height: 62,
+    width: '100%',
+    height: '100%',
     borderRadius: 31,
   },
   detailWrapper: {

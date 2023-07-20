@@ -25,6 +25,12 @@ import {
   SEE_DETAILS,
 } from '../../assets/config';
 
+const MAIN_WIDTH = 250;
+const SUB_WIDTH = 68;
+const R = MAIN_WIDTH / 2;
+const BORDER_WIDTH_SUB_USER = 1;
+const angle = (2 * Math.PI) / DATA_USER.length;
+
 export default function RecentTrans(props) {
   const [tabActive, setTabActive] = useState(0);
 
@@ -32,9 +38,26 @@ export default function RecentTrans(props) {
     setTabActive(index);
   };
 
-  const anotherUserStyle = (item) => {
-    return {top: item.top, left: item.left};
-  }
+  const subUserStyle = (index) => {
+    const x = R * Math.sin(angle * index);
+    const y = R * Math.cos(angle * index);
+    return {
+      top: R - SUB_WIDTH / 2 - y - BORDER_WIDTH_SUB_USER ,
+      left: R - SUB_WIDTH / 2 - x - BORDER_WIDTH_SUB_USER,
+      // top: R - SUB_WIDTH / 2 - y ,
+      // left: R - SUB_WIDTH / 2 - x ,
+    };
+  };
+
+  const renderUser = () => {
+    return DATA_USER.map((item, index) => {
+      return (
+        <View style={[styles.subUser, subUserStyle(index)]} key={index}>
+          <Image source={{ uri: item.img }} style={styles.subImg} />
+        </View>
+      );
+    });
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -101,19 +124,7 @@ export default function RecentTrans(props) {
               <Image source={{ uri: USER_IMG }} style={styles.userImg} />
             </View>
             <View style={styles.secondAround}></View>
-            <View style={styles.mainAround}></View>
-            {DATA_USER.map((item, index) => {
-              return (
-                <View
-                  style={[
-                    styles.anotherUser,
-                    anotherUserStyle(item)
-                  ]}
-                  key={index}>
-                  <Image source={{ uri: item.img }} style={styles.anotherImg} />
-                </View>
-              );
-            })}
+            <View style={styles.mainAround}>{renderUser()}</View>
           </View>
         </View>
         <TouchableOpacity style={styles.detailWrapper}>
@@ -128,7 +139,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: `${BACKGROUND_COLOR}`,
-    // paddingBottom: 10
   },
   mainWrapper: {
     paddingHorizontal: 18,
@@ -141,10 +151,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   bottomPart: {
-    flex: 2,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'relative',
   },
   headerNav: {
     flexDirection: 'row',
@@ -185,7 +194,6 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
   },
   tabContent: {
-    // fontWeight: 600,
     color: '#000',
     opacity: 0.8,
   },
@@ -268,30 +276,27 @@ const styles = StyleSheet.create({
     backgroundColor: '#ecf4ff',
   },
   mainAround: {
-    position: 'absolute',
-    width: 250,
-    height: 250,
-    borderRadius: '250%',
+    height: MAIN_WIDTH,
+    width: MAIN_WIDTH,
     borderWidth: 1,
     borderColor: '#c9d8f6',
+    borderRadius: R,
   },
-  anotherUser: {
+  subUser: {
     position: 'absolute',
-    width: 68,
-    height: 68,
-    borderWidth: 2,
-    borderColor: '#ffff',
-    borderRadius: 32,
+    width: SUB_WIDTH,
+    height: SUB_WIDTH,
+    borderWidth: 1,
+    borderColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: SUB_WIDTH / 2,
     shadowColor: '#d3dcf0',
     shadowOffset: { width: 10, height: 20 },
     shadowOpacity: 0.9,
     shadowRadius: 10,
-    // top: 10,
-    // left: 150,
   },
-  anotherImg: {
+  subImg: {
     width: 62,
     height: 62,
     borderRadius: 31,

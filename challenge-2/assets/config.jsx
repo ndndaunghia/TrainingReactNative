@@ -91,9 +91,6 @@ export const DATA_USER = [
   {
     img: USER_IMG,
   },
-  {
-    img: USER_IMG,
-  },
 ];
 
 export const TABS = [

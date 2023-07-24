@@ -1,11 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import Time from './TimeSelector/Time/Time';
+import { Keyboard, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import TimeSelector from './TimeSelector';
 
 export default function App() {
   return (
     <>
-      <Time/>
+    <SafeAreaView onTouchStart={Keyboard.dismiss}>
+    <TimeSelector/>
+    </SafeAreaView>
     </>
   );
 }

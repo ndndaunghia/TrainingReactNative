@@ -11,68 +11,88 @@ import Feather from 'react-native-vector-icons/Feather';
 import { TIME } from './config';
 import Time from './Time';
 
-const ROW_DEFAULT = 3;
+const COL_DEFAULT = 3;
 export class TimeSelector extends Component {
   state = {
     arrTime: TIME,
-    isHorizontal: true,
-    row: ROW_DEFAULT,
-    col: Math.ceil(TIME.length / ROW_DEFAULT),
+    isHorizontal: false,
+    col: COL_DEFAULT,
+    colChanging: COL_DEFAULT,
+    row: Math.ceil(TIME.length / COL_DEFAULT),
   };
 
-  handleTime = (time, row) => {
-    const arrTemp = [];
-    let index = 0;
-    for (let i = 0; i < this.state.col; i++) {
-      for (let j = 0; j < row; j++) {
-        index = i + j * this.state.col;
-        if (index < time.length) {
-          arrTemp.push(time[index]);
-        }
+  changeRowHorizontal = (time, col) => {
+    // console.log(col);
+    let result = [];
+    for (i = 0; i < col; i++) {
+      let tmp = [];
+      for (j = i; j < time.length; j += col) {
+        // console.log(typeof(j));
+        tmp.push(time[j]);
+        // console.log('j', j);
+        // console.log('time', time);
       }
+      result.push(tmp);
     }
-    console.log(arrTemp);
-    this.setState({ arrTime: arrTemp });
+    // console.log('pess', result);
+    this.setState({ arrTime: result });
   };
 
-  componentDidMount() {
-    // this.handleTime(TIME, this.state.row);
-  }
-
-  onChangeRow = (row) => {
-    this.setState({ row });
+  handleRow = () => {
+    if (this.state.isHorizontal === false) {
+      if (
+        this.state.colChanging >= COL_DEFAULT ||
+        this.state.colChanging === 0
+      ) {
+        this.setState({ col: COL_DEFAULT });
+        this.setState({ colChanging: COL_DEFAULT });
+      } else {
+        this.setState({ col: this.state.colChanging });
+      }
+    } else {
+      if (this.state.colChanging == 0) {
+        this.setState({ colChanging: COL_DEFAULT });
+        this.changeRowHorizontal(TIME, COL_DEFAULT);
+      }
+      this.changeRowHorizontal(TIME, this.state.colChanging);
+    }
   };
 
   changeSetting = () => {
     this.setState((prevState) => ({
       isHorizontal: !prevState.isHorizontal,
     }));
-
-    this.setState({isHorizontal: !this.state.isHorizontal});
-
-    if(this.state.isHorizontal === false) {
-        // const newRow = this.state.col;
-        // this.setState({col: Math.ceil(TIME.length / newRow)})
-        // this.handleTime(TIME, newRow);
-        console.log(1);
-    }
-    else {
-        // this.setState({arrTime: TIME});
-        // this.setState({row: ROW_DEFAULT})
-        console.log(2);
+    if (!this.state.isHorizontal) {
+      this.changeRowHorizontal(TIME, COL_DEFAULT);
+    } else {
+      this.setState({ arrTime: TIME });
     }
   };
 
-  handleRow = () => {
-    let newCol = Math.ceil(TIME.length / this.state.row);
-    this.setState({ col: newCol });
-  };
+  // renderItem2 = (arrItem, indexItem) => {
+  //   return arrItem.map((item, index) => {
+  //     return <Time time={item.time} />;
+  //   });
+  // };
 
   renderItem = ({ item, index }) => {
-    return <Time time={item.time} />;
+    console.log('item', item);
+    if (!this.state.isHorizontal)
+      return <Time time={item.time} status={item.status} key={item.id}/>;
+    else {
+      return (
+        <View>
+          {item.map((timeItem, index) => {
+            return <Time time={timeItem.time} status={timeItem.status}/>;
+            // return <View>{this.renderItem2(timeItem, index)}</View>;
+          })}
+        </View>
+      );
+    }
   };
 
   render() {
+    // console.log('newArr', this.state.arrTime);
     return (
       <View style={styles.container}>
         <View style={styles.timeWrapper}>
@@ -83,12 +103,16 @@ export class TimeSelector extends Component {
           <View style={styles.settingWrapper}>
             <TextInput
               style={styles.inputField}
-              value={this.state.row}
-              onChangeText={this.onChangeRow}
+              keyboardType="numeric"
+              defaultValue={COL_DEFAULT.toString()}
+              value={this.state.colChanging}
+              onChangeText={(colChanging) =>
+                this.setState({ colChanging: Number(colChanging) })
+              }
             />
 
             <TouchableOpacity style={styles.saveBtn} onPress={this.handleRow}>
-              <Text>Luu</Text>
+              <Text>Lưu</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={this.changeSetting}>
               <Feather
@@ -103,16 +127,22 @@ export class TimeSelector extends Component {
         <View style={styles.currentTimeWrapper}>
           <Text style={styles.currentTime}>8.30</Text>
         </View>
-        <FlatList
-          data={this.state.arrTime}
-          numColumns={!this.state.isHorizontal && this.state.col }
-          key={!this.state.isHorizontal && this.state.col}
-        //   key={this.state.col}
-          horizontal={this.state.isHorizontal}
+        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+          <FlatList
+            data={this.state.arrTime}
+            numColumns={!this.state.isHorizontal && this.state.col}
+            key={!this.state.isHorizontal && this.state.col}
+            keyExtractor={(item) => item.id}
+            horizontal={this.state.isHorizontal}
+            renderItem={this.renderItem}
+            style={styles.flatListStyle}
+            contentContainerStyle={{ justifyContent: 'flex-start' }}
+            //   key={this.state.col}
             // numColumns={this.state.isHorizontal ? this.state.col : this.state.row}
             // key={this.state.isHorizontal ? this.state.col : this.state.row}
-          // data={TIME}
-          renderItem={this.renderItem}></FlatList>
+            // data={TIME}
+          />
+        </View>
       </View>
     );
   }
@@ -167,9 +197,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 20,
+    marginTop: 20,
   },
   currentTime: {
     fontSize: 18,
+  },
+  flatListStyle: {
+    flexWrap: 'wrap',
+    // backgroundColor: 'green',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
   },
 });
 

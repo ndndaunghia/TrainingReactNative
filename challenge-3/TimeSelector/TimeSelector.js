@@ -5,10 +5,12 @@ import {
   TextInput,
   FlatList,
   TouchableOpacity,
+  SafeAreaView,
+  Keyboard,
 } from 'react-native';
 import React, { Component } from 'react';
 import Feather from 'react-native-vector-icons/Feather';
-import { TIME } from './config';
+import { TIME, MAIN_COLOR } from './config';
 import Time from './Time';
 
 const COL_DEFAULT = 3;
@@ -17,44 +19,42 @@ export class TimeSelector extends Component {
     arrTime: TIME,
     isHorizontal: false,
     col: COL_DEFAULT,
-    colChanging: COL_DEFAULT,
+    colChanging: String(COL_DEFAULT),
     row: Math.ceil(TIME.length / COL_DEFAULT),
+    itemSelected: null,
   };
 
   changeRowHorizontal = (time, col) => {
-    // console.log(col);
     let result = [];
-    for (i = 0; i < col; i++) {
+    for (i = 0; i < Number(col); i++) {
       let tmp = [];
-      for (j = i; j < time.length; j += col) {
-        // console.log(typeof(j));
+      for (j = i; j < time.length; j += Number(col)) {
         tmp.push(time[j]);
-        // console.log('j', j);
-        // console.log('time', time);
       }
       result.push(tmp);
     }
-    // console.log('pess', result);
     this.setState({ arrTime: result });
   };
 
   handleRow = () => {
     if (this.state.isHorizontal === false) {
       if (
-        this.state.colChanging >= COL_DEFAULT ||
-        this.state.colChanging === 0
+        Number(this.state.colChanging) >= COL_DEFAULT ||
+        Number(this.state.colChanging) === 0
       ) {
-        this.setState({ col: COL_DEFAULT });
-        this.setState({ colChanging: COL_DEFAULT });
+        this.setState({ col: COL_DEFAULT.toString() });
+        this.setState({ colChanging: COL_DEFAULT.toString() });
       } else {
         this.setState({ col: this.state.colChanging });
       }
     } else {
-      if (this.state.colChanging == 0) {
-        this.setState({ colChanging: COL_DEFAULT });
-        this.changeRowHorizontal(TIME, COL_DEFAULT);
+      if (Number(this.state.colChanging) === 0) {
+        this.changeRowHorizontal(TIME, COL_DEFAULT.toString());
+        this.setState({ col: COL_DEFAULT.toString() });
+        this.setState({ colChanging: COL_DEFAULT.toString() });
+      } else {
+        this.changeRowHorizontal(TIME, this.state.colChanging);
       }
-      this.changeRowHorizontal(TIME, this.state.colChanging);
     }
   };
 
@@ -69,22 +69,35 @@ export class TimeSelector extends Component {
     }
   };
 
-  // renderItem2 = (arrItem, indexItem) => {
-  //   return arrItem.map((item, index) => {
-  //     return <Time time={item.time} />;
-  //   });
-  // };
+  handleSelected = (item) => {
+    this.setState({ itemSelected: item });
+  };
 
-  renderItem = ({ item, index }) => {
-    console.log('item', item);
-    if (!this.state.isHorizontal)
-      return <Time time={item.time} status={item.status} key={item.id}/>;
+  handleCurrentTime = () => {
+    return (
+      <Text style={styles.currentTime}>{this.state.itemSelected?.time}</Text>
+    );
+  };
+
+  renderChild = (item) => {
+    return (
+      <Time
+        key={item.id}
+        time={item.time}
+        status={item.status}
+        isSelected={item.id === this.state.itemSelected?.id}
+        selectItem={() => this.handleSelected(item)}
+      />
+    );
+  };
+
+  renderItem = ({ item }) => {
+    if (!this.state.isHorizontal) return this.renderChild(item);
     else {
       return (
         <View>
-          {item.map((timeItem, index) => {
-            return <Time time={timeItem.time} status={timeItem.status}/>;
-            // return <View>{this.renderItem2(timeItem, index)}</View>;
+          {item.map((timeItem) => {
+            return this.renderChild(timeItem);
           })}
         </View>
       );
@@ -92,9 +105,8 @@ export class TimeSelector extends Component {
   };
 
   render() {
-    // console.log('newArr', this.state.arrTime);
     return (
-      <View style={styles.container}>
+      <SafeAreaView onTouchStart={Keyboard.dismiss} style={styles.container}>
         <View style={styles.timeWrapper}>
           <View style={styles.titleWrapper}>
             <Feather name="clock" style={styles.icon} />
@@ -107,12 +119,12 @@ export class TimeSelector extends Component {
               defaultValue={COL_DEFAULT.toString()}
               value={this.state.colChanging}
               onChangeText={(colChanging) =>
-                this.setState({ colChanging: Number(colChanging) })
+                this.setState({ colChanging: colChanging })
               }
             />
 
             <TouchableOpacity style={styles.saveBtn} onPress={this.handleRow}>
-              <Text>Lưu</Text>
+              <Text style={styles.saveBtnContent}>Lưu</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={this.changeSetting}>
               <Feather
@@ -125,51 +137,53 @@ export class TimeSelector extends Component {
           </View>
         </View>
         <View style={styles.currentTimeWrapper}>
-          <Text style={styles.currentTime}>8.30</Text>
+          {this.handleCurrentTime()}
         </View>
-        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-          <FlatList
-            data={this.state.arrTime}
-            numColumns={!this.state.isHorizontal && this.state.col}
-            key={!this.state.isHorizontal && this.state.col}
-            keyExtractor={(item) => item.id}
-            horizontal={this.state.isHorizontal}
-            renderItem={this.renderItem}
-            style={styles.flatListStyle}
-            contentContainerStyle={{ justifyContent: 'flex-start' }}
-            //   key={this.state.col}
-            // numColumns={this.state.isHorizontal ? this.state.col : this.state.row}
-            // key={this.state.isHorizontal ? this.state.col : this.state.row}
-            // data={TIME}
-          />
-        </View>
-      </View>
+        <FlatList
+          data={this.state.arrTime}
+          numColumns={!this.state.isHorizontal && Number(this.state.col)}
+          key={!this.state.isHorizontal && Number(this.state.col)}
+          // keyExtractor={(item) => item.id}
+          horizontal={this.state.isHorizontal}
+          renderItem={this.renderItem}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{
+            justifyContent: 'center',
+          }}
+        />
+      </SafeAreaView>
     );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 20,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   timeWrapper: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingHorizontal: 20,
+    marginTop: 20,
   },
   titleWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 16,
-    flex: 1.5,
+    gap: 10,
+    flex: 2,
   },
   title: {
     fontSize: 20,
     fontWeight: 500,
+    color: `${MAIN_COLOR}`,
   },
   icon: {
     fontSize: 25,
-    // color: '#91C8E4',
+    color: `${MAIN_COLOR}`,
   },
   settingWrapper: {
     flex: 1,
@@ -181,32 +195,37 @@ const styles = StyleSheet.create({
   inputField: {
     flex: 1,
     borderWidth: 1,
-    borderColor: '#000',
-    paddingHorizontal: 6,
+    borderColor: `${MAIN_COLOR}`,
+    paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 4,
+    // minWidth: 30
   },
   saveBtn: {
     borderWidth: 1,
-    borderColor: '#000',
-    paddingHorizontal: 6,
+    backgroundColor: `${MAIN_COLOR}`,
+    paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 6,
+  },
+  saveBtnContent: {
+    color: '#fff',
+    fontWeight: 500,
   },
   currentTimeWrapper: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 20,
-    marginTop: 20,
+    marginBottom: 40,
+    marginTop: 40,
   },
   currentTime: {
-    fontSize: 18,
+    fontSize: 20,
+    fontWeight: 500,
+    minHeight: 26,
+    color: `${MAIN_COLOR}`,
   },
-  flatListStyle: {
-    flexWrap: 'wrap',
-    // backgroundColor: 'green',
-    paddingHorizontal: 10,
-    paddingVertical: 6,
+  flatListWrapper: {
+    alignItems: 'center',
   },
 });
 

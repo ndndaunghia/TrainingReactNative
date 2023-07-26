@@ -117,3 +117,4 @@ export const TIME = [
 ];
 
 export const MAIN_COLOR = '#802384';
+export const COL_DEFAULT = 3;

@@ -10,10 +10,9 @@ import {
 } from 'react-native';
 import React, { Component } from 'react';
 import Feather from 'react-native-vector-icons/Feather';
-import { TIME, MAIN_COLOR } from './config';
+import { TIME, MAIN_COLOR, COL_DEFAULT } from './config';
 import Time from './Time';
 
-const COL_DEFAULT = 3;
 export class TimeSelector extends Component {
   state = {
     arrTime: TIME,
@@ -199,7 +198,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 4,
-    // minWidth: 30
   },
   saveBtn: {
     borderWidth: 1,
@@ -224,9 +222,9 @@ const styles = StyleSheet.create({
     minHeight: 26,
     color: `${MAIN_COLOR}`,
   },
-  flatListWrapper: {
-    alignItems: 'center',
-  },
+  // flatListWrapper: {
+  //   alignItems: 'center',
+  // },
 });
 
 export default TimeSelector;

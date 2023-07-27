@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 export class Time extends Component {
   render() {
     const { time, status, isSelected} = this.props;
-    
+
     return (
       <TouchableOpacity
         style={[
@@ -26,8 +26,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     minWidth: 90,
     paddingVertical: 10,
-    marginRight: 10,
-    marginBottom: 10,
+    marginRight: 12,
+    marginBottom: 12,
     borderRadius: 10,
     alignItems: 'center',
     // alignSelf: 'center'

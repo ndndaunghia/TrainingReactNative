@@ -49,8 +49,10 @@ export class TimeSelector extends Component {
     } else {
       if (Number(this.state.colChanging) === 0) {
         this.changeRowHorizontal(TIME, COL_DEFAULT.toString());
-        this.setState({ col: COL_DEFAULT.toString() });
-        this.setState({ colChanging: COL_DEFAULT.toString() });
+        this.setState({
+          col: COL_DEFAULT.toString(),
+          colChanging: COL_DEFAULT.toString(),
+        });
       } else {
         this.changeRowHorizontal(TIME, this.state.colChanging);
       }
@@ -58,14 +60,18 @@ export class TimeSelector extends Component {
   };
 
   changeSetting = () => {
-    this.setState((prevState) => ({
-      isHorizontal: !prevState.isHorizontal,
-    }));
-    if (!this.state.isHorizontal) {
-      this.changeRowHorizontal(TIME, COL_DEFAULT);
-    } else {
-      this.setState({ arrTime: TIME });
-    }
+    this.setState(
+      (prevState) => ({
+        isHorizontal: !prevState.isHorizontal,
+      }),
+      () => {
+        if (!this.state.isHorizontal) {
+          this.changeRowHorizontal(TIME, COL_DEFAULT);
+        } else {
+          this.setState({ arrTime: TIME });
+        }
+      },
+    );
   };
 
   handleSelected = (item) => {
@@ -91,8 +97,9 @@ export class TimeSelector extends Component {
   };
 
   renderItem = ({ item }) => {
-    if (!this.state.isHorizontal) return this.renderChild(item);
-    else {
+    if (!this.state.isHorizontal) {
+      return this.renderChild(item);
+    } else {
       return (
         <View>
           {item.map((timeItem) => {
@@ -222,9 +229,6 @@ const styles = StyleSheet.create({
     minHeight: 26,
     color: `${MAIN_COLOR}`,
   },
-  // flatListWrapper: {
-  //   alignItems: 'center',
-  // },
 });
 
 export default TimeSelector;

@@ -19,12 +19,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingHorizontal: 20,
         paddingVertical: 10,
-        minWidth: 66,
-        minHeight: 54,
+        minWidth: 62,
+        minHeight: 62,
         marginHorizontal: 4
     },
     inputContent: {
-        fontSize: 26,
+        fontSize: 20,
         fontWeight: 'bold'
     }
 })

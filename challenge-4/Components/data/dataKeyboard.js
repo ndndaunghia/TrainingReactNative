@@ -4,11 +4,19 @@ export const dataKeyBoard = [
   ['Enter', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'Del'],
 ];
 
+// export const dataTable = [
+//     [{value: ''},{value: ''},{value: ''},{value: ''},{value: ''}],
+//     [{value: ''},{value: ''},{value: ''},{value: ''},{value: ''}],
+//     [{value: ''},{value: ''},{value: ''},{value: ''},{value: ''}],
+//     [{value: ''},{value: ''},{value: ''},{value: ''},{value: ''}],
+//     [{value: ''},{value: ''},{value: ''},{value: ''},{value: ''}],
+//     [{value: ''},{value: ''},{value: ''},{value: ''},{value: ''}],
+// ]
 export const dataTable = [
-    [{value: ''},{value: ''},{value: ''},{value: ''},{value: ''}],
-    [{value: ''},{value: ''},{value: ''},{value: ''},{value: ''}],
-    [{value: ''},{value: ''},{value: ''},{value: ''},{value: ''}],
-    [{value: ''},{value: ''},{value: ''},{value: ''},{value: ''}],
-    [{value: ''},{value: ''},{value: ''},{value: ''},{value: ''}],
-    [{value: ''},{value: ''},{value: ''},{value: ''},{value: ''}],
-]
+  ['', '', '', '', ''],
+  ['', '', '', '', ''],
+  ['', '', '', '', ''],
+  ['', '', '', '', ''],
+  ['', '', '', '', ''],
+  ['', '', '', '', ''],
+];

@@ -7,10 +7,11 @@ export class Table extends Component {
   renderItem = () => {
     return (
       this.props.data.map((data, index) => {
+    
         return (
           <View key={index} style={styles.rowTable}>
             {data.map((item, index) => {
-              return <InputValue key={index} textValue={item.value} />;
+              return <InputValue key={index} textValue={item} />;
             })}
           </View>
         );

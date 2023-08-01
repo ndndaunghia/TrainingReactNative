@@ -1,12 +1,12 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React, { Component } from 'react';
-import { dataKeyBoard } from './data/dataKeyboard';
+import { DATA_KEYBOARD } from './data/dataKeyboard';
 
 export class Keyboard extends Component {
   render() {
     return (
       <View style={styles.keyboardWrapper}>
-        {dataKeyBoard.map((data, index) => {
+        {DATA_KEYBOARD.map((data, index) => {
           return (
             <View style={styles.keyboardRow} key={index}>
               {data.map((item, index) => {

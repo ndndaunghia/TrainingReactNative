@@ -5,18 +5,15 @@ import InputValue from './InputValue';
 
 export class Table extends Component {
   renderItem = () => {
-    return (
-      this.props.data.map((data, index) => {
-    
-        return (
-          <View key={index} style={styles.rowTable}>
-            {data.map((item, index) => {
-              return <InputValue key={index} textValue={item} />;
-            })}
-          </View>
-        );
-      })
-    );
+    return this.props.data.map((data, index) => {
+      return (
+        <View key={index} style={styles.rowTable}>
+          {data.map((item, index) => {
+            return <InputValue key={index} textValue={item.value} status={item.status}/>;
+          })}
+        </View>
+      );
+    });
   };
   render() {
     return <View style={styles.tableWrapper}>{this.renderItem()}</View>;

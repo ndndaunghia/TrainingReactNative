@@ -1,1 +1,0 @@
-export const KEY_WORD = 'ABCDE'

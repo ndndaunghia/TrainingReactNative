@@ -1,17 +1,19 @@
-import { View, StyleSheet } from 'react-native';
-import React, { Component } from 'react';
-import Title from '../Components/Title';
-import Table from '../Components/Table';
-import Keyboard from '../Components/Keyboard';
-import { DATA_TABLE } from '../Components/data/dataKeyboard';
+import { View, StyleSheet, Text } from "react-native";
+import React, { Component } from "react";
+import Title from "../Components/Title";
+import Table from "../Components/Table";
+import Keyboard from "../Components/Keyboard";
+import { DATA_TABLE, DATA_KEYBOARD, WORD_LIST } from "../Components/data/data";
 
 export class Main extends Component {
   state = {
-    keyBoardActive: '',
+    keyBoardActive: "",
     arrTable: DATA_TABLE,
+    arrKeyboard: DATA_KEYBOARD,
+    arrCorrectLetter: [],
     valueOnRow: [],
     rowIndex: 0,
-    keyWord: 'ABCDE',
+    keyWord: WORD_LIST[Math.floor(Math.random() * WORD_LIST.length)],
   };
 
   handleFillRow = () => {
@@ -29,57 +31,142 @@ export class Main extends Component {
     this.setState((prevState) => {
       prevState.valueOnRow.pop();
     });
-    this.state.arrTable[this.state.rowIndex].splice(maxIndexInRow, 1, '');
+    this.state.arrTable[this.state.rowIndex].splice(maxIndexInRow, 1, "");
     this.setState({ arrTable: this.state.arrTable });
   };
 
   handleCheckWord = () => {
-    const keyWord = this.state.keyWord.split('');
-    let tmpArr = [...this.state.arrTable];
-    for (let i = 0; i < this.state.valueOnRow.length; i++) {
-      if (keyWord.includes(this.state.arrTable[this.state.rowIndex][i].value)) {
-        if (this.state.arrTable[this.state.rowIndex][i].value === keyWord[i]) {
-          tmpArr[this.state.rowIndex][i].status = 1;
+    const rightWord = WORD_LIST.some(
+      (word) => word === this.state.valueOnRow.join("")
+    );
+    if (rightWord) {
+      const keyWord = this.state.keyWord.split("");
+      let tmpArr = [...this.state.arrTable];
+      let tmpKeyboard = [...this.state.arrKeyboard];
+      let tmpArrCorrectLetter = [...this.state.arrCorrectLetter];
+      for (let i = 0; i < this.state.valueOnRow.length; i++) {
+        if (
+          keyWord.includes(this.state.arrTable[this.state.rowIndex][i].value)
+        ) {
+          if (
+            this.state.arrTable[this.state.rowIndex][i].value === keyWord[i]
+          ) {
+            tmpArr[this.state.rowIndex][i].status = 1;
+            const keyObj = tmpKeyboard
+              .flat()
+              .find(
+                (item) =>
+                  item.value ===
+                  this.state.arrTable[this.state.rowIndex][i].value
+              );
+            if (keyObj) {
+              keyObj.status = 1;
+            }
+            if (
+              !tmpArrCorrectLetter.includes(
+                this.state.arrTable[this.state.rowIndex][i].value
+              )
+            ) {
+              tmpArrCorrectLetter.push(
+                this.state.arrTable[this.state.rowIndex][i].value
+              );
+            }
+          } else {
+            tmpArr[this.state.rowIndex][i].status = 2;
+            const keyObj = tmpKeyboard
+              .flat()
+              .find(
+                (item) =>
+                  item.value ===
+                  this.state.arrTable[this.state.rowIndex][i].value
+              );
+            if (keyObj && keyObj.status === 0) {
+              keyObj.status = 2;
+            }
+          }
         } else {
-          tmpArr[this.state.rowIndex][i].status = 2;
+          tmpArr[this.state.rowIndex][i].status = -1;
+          const keyObj = tmpKeyboard
+            .flat()
+            .find(
+              (item) =>
+                item.value === this.state.arrTable[this.state.rowIndex][i].value
+            );
+          if (keyObj) {
+            keyObj.status = -1;
+          }
         }
-      } else {
-        tmpArr[this.state.rowIndex][i].status = -1;
       }
+      const isGameOver =
+        this.state.arrCorrectLetter.length === 5 || this.state.rowIndex === 5;
+      if (isGameOver) {
+        this.resetGame();
+      } else {
+        this.setState((prevState) => {
+          prevState.rowIndex = prevState.rowIndex + 1;
+          prevState.valueOnRow = [];
+          return {
+            arrTable: tmpArr,
+            arrKeyboard: tmpKeyboard,
+            arrCorrectLetter: tmpArrCorrectLetter,
+          };
+        });
+      }
+    } else {
+      alert("Vui lòng chọn từ có nghĩa");
     }
+  };
+
+  resetGame = () => {
+    const newKeyword = WORD_LIST[Math.floor(Math.random() * WORD_LIST.length)];
+    const newDataTable = DATA_TABLE.map((row) =>
+      row.map((cell) => ({ ...cell, status: 0 }))
+    );
+    const newKeyboard = DATA_KEYBOARD.map((row) =>
+      row.map((item) => ({ ...item, status: 0 }))
+    );
+
     this.setState({
-      arrTable: tmpArr,
-    });
-    this.setState((prevState) => {
-      prevState.rowIndex = prevState.rowIndex + 1;
-      prevState.valueOnRow = [];
+      keyBoardActive: "",
+      arrTable: newDataTable,
+      arrKeyboard: newKeyboard,
+      arrCorrectLetter: [],
+      valueOnRow: [],
+      rowIndex: 0,
+      keyWord: newKeyword,
     });
   };
   handlePress = (i) => {
-    if (i !== 'Enter' && i !== 'Del') {
-      this.setState({ keyBoardActive: i });
-      if (this.state.valueOnRow.length < 5) {
-        this.setState((prevState) => {
-          const updateValueOnRow = [...prevState.valueOnRow, i];
-          prevState.valueOnRow = updateValueOnRow;
-        });
-        this.handleFillRow();
-      }
-    }
-    if (i === 'Enter') {
-      if (this.state.rowIndex <= 5) {
-        if (this.state.valueOnRow.length == 5) {
-          this.handleCheckWord();
+    switch (i) {
+      case "ENTER":
+        if (this.state.rowIndex <= 5) {
+          if (this.state.valueOnRow.length === 5) {
+            this.handleCheckWord();
+          } else {
+            alert("Chưa đủ ký tự");
+          }
         } else {
-          alert('Chưa đủ ký tự');
+          alert("Đã tối đa lượt đoán");
         }
-      } else {
-        alert('Đã tối đa lượt đoán');
-      }
-    }
+        break;
+      case "DEL":
+        this.handleRemoveValueOnRow();
+        break;
+      default:
+        if (i !== "ENTER" && i !== "DEL") {
+          this.setState((prevState) => {
+            const keyBoardActive = i;
+            const newValueOnRow =
+              prevState.valueOnRow.length < 5
+                ? [...prevState.valueOnRow, i]
+                : prevState.valueOnRow;
 
-    if (i === 'Del') {
-      this.handleRemoveValueOnRow();
+            return { keyBoardActive, valueOnRow: newValueOnRow };
+          });
+
+          this.handleFillRow();
+        }
+        break;
     }
   };
 
@@ -88,11 +175,17 @@ export class Main extends Component {
       <>
         <View style={styles.container}>
           <Title />
+          <View>
+            <Text>{this.state.keyWord}</Text>
+          </View>
           <Table data={this.state.arrTable} />
         </View>
 
         <View>
-          <Keyboard handlePress={this.handlePress} />
+          <Keyboard
+            handlePress={this.handlePress}
+            data={this.state.arrKeyboard}
+          />
         </View>
       </>
     );
@@ -101,8 +194,8 @@ export class Main extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
-  }
-})
+    flex: 1,
+  },
+});
 
 export default Main;

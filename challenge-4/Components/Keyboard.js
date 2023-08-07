@@ -2,6 +2,10 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { Component } from "react";
 
 export class Keyboard extends Component {
+  // renderStatusKeyboard = (item) => {
+
+  // }
+
   render() {
     return (
       <View style={styles.keyboardWrapper}>

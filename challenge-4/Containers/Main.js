@@ -1,9 +1,9 @@
-import { View, StyleSheet, Text, Alert } from 'react-native';
-import React, { Component } from 'react';
-import Title from '../Components/Title';
-import Table from '../Components/Table';
-import Keyboard from '../Components/Keyboard';
-import { DATA_TABLE, DATA_KEYBOARD, WORD_LIST } from '../Components/data/data';
+import { View, StyleSheet, Text, Alert } from "react-native";
+import React, { Component } from "react";
+import Title from "../Components/Title";
+import Table from "../Components/Table";
+import Keyboard from "../Components/Keyboard";
+import { DATA_TABLE, DATA_KEYBOARD, WORD_LIST } from "../Components/data/data";
 
 export class Main extends Component {
   get rawArrTable() {
@@ -19,7 +19,7 @@ export class Main extends Component {
   }
 
   state = {
-    keyBoardActive: '',
+    keyBoardActive: "",
     arrTable: this.rawArrTable,
     arrKeyboard: this.rawArrKeyboard,
     arrCorrectLetter: [],
@@ -29,13 +29,13 @@ export class Main extends Component {
   };
 
   createPlayAgainConfirm = (message) =>
-    Alert.alert(message, 'Chơi lại', [
-      { text: 'OK', onPress: () => this.resetGame() },
+    Alert.alert(message, "Chơi lại", [
+      { text: "OK", onPress: () => this.resetGame() },
     ]);
 
   resetGame = () => {
     this.setState({
-      keyBoardActive: '',
+      keyBoardActive: "",
       arrTable: this.rawArrTable,
       arrKeyboard: this.rawArrKeyboard,
       arrCorrectLetter: [],
@@ -65,16 +65,16 @@ export class Main extends Component {
     this.setState((prevState) => {
       prevState.valueOnRow.pop();
     });
-    this.state.arrTable[this.state.rowIndex].splice(maxIndexInRow, 1, '');
+    this.state.arrTable[this.state.rowIndex].splice(maxIndexInRow, 1, "");
     this.setState({ arrTable: this.state.arrTable });
   };
 
   handleCheckWord = () => {
     const rightWord = WORD_LIST.some(
-      (word) => word === this.state.valueOnRow.join(''),
+      (word) => word === this.state.valueOnRow.join("")
     );
     if (rightWord) {
-      const keyWord = this.state.keyWord.split('');
+      const keyWord = this.state.keyWord.split("");
       let tmpArr = [...this.state.arrTable];
       let tmpKeyboard = [...this.state.arrKeyboard];
       let tmpArrCorrectLetter = [...this.state.arrCorrectLetter];
@@ -85,14 +85,14 @@ export class Main extends Component {
             const keyObj = tmpKeyboard
               .flat()
               .find(
-                (item) => item.value === tmpArr[this.state.rowIndex][i].value,
+                (item) => item.value === tmpArr[this.state.rowIndex][i].value
               );
             if (keyObj) {
               keyObj.status = 1;
             }
             if (
               !tmpArrCorrectLetter.includes(
-                tmpArr[this.state.rowIndex][i].value,
+                tmpArr[this.state.rowIndex][i].value
               )
             ) {
               tmpArrCorrectLetter.push(tmpArr[this.state.rowIndex][i].value);
@@ -104,7 +104,7 @@ export class Main extends Component {
               .find(
                 (item) =>
                   item.value ===
-                  this.state.arrTable[this.state.rowIndex][i].value,
+                  this.state.arrTable[this.state.rowIndex][i].value
               );
             if (keyObj && keyObj.status === 0) {
               keyObj.status = 2;
@@ -116,8 +116,7 @@ export class Main extends Component {
             .flat()
             .find(
               (item) =>
-                item.value ===
-                this.state.arrTable[this.state.rowIndex][i].value,
+                item.value === this.state.arrTable[this.state.rowIndex][i].value
             );
           if (keyObj) {
             keyObj.status = -1;
@@ -135,36 +134,38 @@ export class Main extends Component {
           };
         },
         () => {
-          const isGameOver = this.state.arrCorrectLetter.length === 5;
-          if (isGameOver) {
-            this.createPlayAgainConfirm('Đoán đúng rồi');
+          const isWin = this.state.arrCorrectLetter.length === 5;
+          const isLose = this.state.rowIndex > 5;
+          if (isWin) {
+            this.createPlayAgainConfirm("Đoán đúng rồi");
+          } else if (isWin && this.state.rowIndex === 5) {
+            this.createPlayAgainConfirm("Đoán đúng rồi");
+          } else if (isLose) {
+            this.createPlayAgainConfirm("Đã tối đa lượt đoán");
           }
-        },
+        }
       );
     } else {
-      alert('Vui lòng chọn từ có nghĩa');
+      alert("Vui lòng chọn từ có nghĩa");
     }
   };
 
   handlePress = (i) => {
     switch (i) {
-      case 'ENTER':
-        if (this.state.rowIndex < 5) {
+      case "ENTER":
+        if (this.state.rowIndex <= 5) {
           if (this.state.valueOnRow.length === 5) {
             this.handleCheckWord();
           } else {
-            alert('Chưa đủ ký tự');
+            alert("Chưa đủ ký tự");
           }
-        } else if (this.state.arrCorrectLetter.length === 5) {
-          this.handleCheckWord();
-          this.createPlayAgainConfirm('Đã tối đa lượt đoán');
         }
         break;
-      case 'DEL':
+      case "DEL":
         this.handleRemoveValueOnRow();
         break;
       default:
-        if (i !== 'ENTER' && i !== 'DEL') {
+        if (i !== "ENTER" && i !== "DEL") {
           this.setState((prevState) => {
             const keyBoardActive = i;
             const newValueOnRow =

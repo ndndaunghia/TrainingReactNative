@@ -35,6 +35,12 @@ export const DATA_KEYBOARD = [
   ],
 ];
 
+export const STATUS = {
+  CORRECT: 1,
+  NOT_ENTIRELY_CORRECT: 2,
+  INCORRECT: -1
+}
+
 export const DATA_TABLE = [
   [
     { value: "", status: 0 },
@@ -81,6 +87,9 @@ export const DATA_TABLE = [
 ];
 
 export const WORD_LIST = [
+  "HELLO",
+  "CANDY",
+  "MODAL",
   "ABOUT",
   "ALERT",
   "ARGUE",

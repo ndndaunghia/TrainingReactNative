@@ -1,6 +1,6 @@
 import { Text, View, StyleSheet } from 'react-native';
 import React, { Component } from 'react';
-
+import { renderColor } from './helper';
 export class InputValue extends Component {
   render() {
     const { status, textValue } = this.props;
@@ -8,13 +8,9 @@ export class InputValue extends Component {
       <View
         style={[
           styles.inputWrapper,
-          status === 1
-            ? { backgroundColor: 'green' }
-            : status === 2
-            ? { backgroundColor: 'yellow' }
-            : status === -1
-            ? { backgroundColor: 'grey' }
-            : null,
+          {
+            backgroundColor: renderColor(status),
+          },
         ]}>
         <Text style={styles.inputContent}>{textValue}</Text>
       </View>

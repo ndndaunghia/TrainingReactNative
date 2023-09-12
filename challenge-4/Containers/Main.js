@@ -1,9 +1,9 @@
-import { View, StyleSheet, Text, Alert } from "react-native";
-import React, { Component } from "react";
-import Title from "../Components/Title";
-import Table from "../Components/Table";
-import Keyboard from "../Components/Keyboard";
-import { DATA_TABLE, DATA_KEYBOARD, WORD_LIST } from "../Components/data/data";
+import { View, StyleSheet, Text, Alert } from 'react-native';
+import React, { Component } from 'react';
+import Title from '../Components/Title';
+import Table from '../Components/Table';
+import Keyboard from '../Components/Keyboard';
+import { DATA_TABLE, DATA_KEYBOARD, WORD_LIST } from '../Components/data/data';
 
 export class Main extends Component {
   get rawArrTable() {
@@ -19,7 +19,7 @@ export class Main extends Component {
   }
 
   state = {
-    keyBoardActive: "",
+    keyBoardActive: '',
     arrTable: this.rawArrTable,
     arrKeyboard: this.rawArrKeyboard,
     arrCorrectLetter: [],
@@ -29,20 +29,19 @@ export class Main extends Component {
   };
 
   createPlayAgainConfirm = (message) =>
-    Alert.alert(message, "Chơi lại", [
-      { text: "OK", onPress: () => this.resetGame() },
+    Alert.alert(message, 'Chơi lại', [
+      { text: 'OK', onPress: () => this.resetGame() },
     ]);
 
   resetGame = () => {
     this.setState({
-      keyBoardActive: "",
+      keyBoardActive: '',
       arrTable: this.rawArrTable,
       arrKeyboard: this.rawArrKeyboard,
       arrCorrectLetter: [],
       valueOnRow: [],
       rowIndex: 0,
       keyWord: WORD_LIST[Math.floor(Math.random() * WORD_LIST.length)],
-      isEnded: false,
     });
   };
 
@@ -62,110 +61,109 @@ export class Main extends Component {
 
   handleRemoveValueOnRow = () => {
     let maxIndexInRow = this.state.valueOnRow.length - 1;
+    console.log('a', this.state);
     this.setState((prevState) => {
       prevState.valueOnRow.pop();
     });
-    this.state.arrTable[this.state.rowIndex].splice(maxIndexInRow, 1, "");
+    this.state.arrTable[this.state.rowIndex].splice(maxIndexInRow, 1, '');
     this.setState({ arrTable: this.state.arrTable });
   };
 
   handleCheckWord = () => {
-    const rightWord = WORD_LIST.some(
-      (word) => word === this.state.valueOnRow.join("")
-    );
-    if (rightWord) {
-      const keyWord = this.state.keyWord.split("");
-      let tmpArr = [...this.state.arrTable];
-      let tmpKeyboard = [...this.state.arrKeyboard];
-      let tmpArrCorrectLetter = [...this.state.arrCorrectLetter];
-      for (let i = 0; i < this.state.valueOnRow.length; i++) {
-        if (keyWord.includes(tmpArr[this.state.rowIndex][i].value)) {
-          if (tmpArr[this.state.rowIndex][i].value === keyWord[i]) {
-            tmpArr[this.state.rowIndex][i].status = 1;
-            const keyObj = tmpKeyboard
-              .flat()
-              .find(
-                (item) => item.value === tmpArr[this.state.rowIndex][i].value
-              );
-            if (keyObj) {
-              keyObj.status = 1;
-            }
-            if (
-              !tmpArrCorrectLetter.includes(
-                tmpArr[this.state.rowIndex][i].value
-              )
-            ) {
-              tmpArrCorrectLetter.push(tmpArr[this.state.rowIndex][i].value);
-            }
-          } else {
-            tmpArr[this.state.rowIndex][i].status = 2;
-            const keyObj = tmpKeyboard
-              .flat()
-              .find(
-                (item) =>
-                  item.value ===
-                  this.state.arrTable[this.state.rowIndex][i].value
-              );
-            if (keyObj && keyObj.status === 0) {
-              keyObj.status = 2;
-            }
-          }
-        } else {
-          tmpArr[this.state.rowIndex][i].status = -1;
-          const keyObj = tmpKeyboard
-            .flat()
-            .find(
-              (item) =>
-                item.value === this.state.arrTable[this.state.rowIndex][i].value
-            );
-          if (keyObj) {
-            keyObj.status = -1;
-          }
+    // const rightWord = WORD_LIST.some(
+    //   (word) => word === this.state.valueOnRow.join(''),
+    // );
+    // if (rightWord) {
+    // const keyWord = ['F', 'L', 'O', 'O', 'R'];
+    const keyWord = this.state.keyWord.split('');
+    let tmpArr = [...this.state.arrTable];
+    let tmpKeyboard = [...this.state.arrKeyboard];
+    let tmpValueOnRow = [...this.state.valueOnRow];
+    let tmpArrCorrectLetter = [];
+
+    // console.log(
+    //   tmpValueOnRow.map((letter, idx) =>
+    //     letter == keyWord[idx] ? (keyWord[idx] = false) : letter,
+    //   ),
+    // );
+
+    let status = tmpValueOnRow
+      .map((letter, idx) =>
+        letter == keyWord[idx] ? (keyWord[idx] = false) : letter,
+      )
+      .map((letter, idx) =>
+        letter
+          ? (idx = keyWord.indexOf(letter)) < 0
+            ? 'incorrect'
+            : (keyWord[idx] = 'notEntirelyCorrect')
+          : 'correct',
+      );
+
+    tmpArr[this.state.rowIndex].forEach((item, i) => {
+      if (status[i] === 'correct') {
+        item.status = 1;
+        tmpArrCorrectLetter.push(item.value);
+      } else if (status[i] === 'notEntirelyCorrect') {
+        item.status = 2;
+      } else {
+        item.status = -1;
+      }
+
+      const keyObj = tmpKeyboard
+        .flat()
+        .find((item) => item.value === tmpArr[this.state.rowIndex][i].value);
+      if (keyObj) {
+        if (item.status === 1) {
+          keyObj.status = 1;
+        } else if (item.status === 2 && keyObj.status === 0) {
+          keyObj.status = 2;
+        } else if (item.status === -1 && keyObj.status === 0) {
+          keyObj.status = -1;
         }
       }
-      this.setState(
-        (prevState) => {
-          prevState.rowIndex = prevState.rowIndex + 1;
-          prevState.valueOnRow = [];
-          return {
-            arrTable: tmpArr,
-            arrKeyboard: tmpKeyboard,
-            arrCorrectLetter: tmpArrCorrectLetter,
-          };
-        },
-        () => {
-          const isWin = this.state.arrCorrectLetter.length === 5;
-          const isLose = this.state.rowIndex > 5;
-          if (isWin) {
-            this.createPlayAgainConfirm("Đoán đúng rồi");
-          } else if (isWin && this.state.rowIndex === 5) {
-            this.createPlayAgainConfirm("Đoán đúng rồi");
-          } else if (isLose) {
-            this.createPlayAgainConfirm("Đã tối đa lượt đoán");
-          }
+    });
+
+    this.setState(
+      (prevState) => {
+        return {
+          valueOnRow: [],
+          rowIndex: prevState.rowIndex + 1,
+          arrTable: tmpArr,
+          arrKeyboard: tmpKeyboard,
+          arrCorrectLetter: tmpArrCorrectLetter,
+        };
+      },
+      () => {
+        const isWin = this.state.arrCorrectLetter.length === 5;
+        const isLose = this.state.rowIndex > 5;
+        if (isWin) {
+          this.createPlayAgainConfirm('Đoán đúng rồi');
+        } else if (isLose) {
+          this.createPlayAgainConfirm('Đã tối đa lượt đoán');
         }
-      );
-    } else {
-      alert("Vui lòng chọn từ có nghĩa");
-    }
+      },
+    );
+    // } else {
+    //   alert('Vui lòng chọn từ có nghĩa');
+    // }
   };
 
   handlePress = (i) => {
     switch (i) {
-      case "ENTER":
+      case 'ENTER':
         if (this.state.rowIndex <= 5) {
           if (this.state.valueOnRow.length === 5) {
             this.handleCheckWord();
           } else {
-            alert("Chưa đủ ký tự");
+            alert('Chưa đủ ký tự');
           }
         }
         break;
-      case "DEL":
+      case 'DEL':
         this.handleRemoveValueOnRow();
         break;
       default:
-        if (i !== "ENTER" && i !== "DEL") {
+        if (i !== 'ENTER' && i !== 'DEL') {
           this.setState((prevState) => {
             const keyBoardActive = i;
             const newValueOnRow =

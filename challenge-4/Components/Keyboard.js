@@ -1,11 +1,7 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { Component } from "react";
-
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { Component } from 'react';
+import { renderColor } from './helper';
 export class Keyboard extends Component {
-  // renderStatusKeyboard = (item) => {
-
-  // }
-
   render() {
     return (
       <View style={styles.keyboardWrapper}>
@@ -17,17 +13,12 @@ export class Keyboard extends Component {
                   <TouchableOpacity
                     style={[
                       styles.itemKeyboard,
-                      item.status === 1
-                        ? { backgroundColor: "green" }
-                        : item.status === 2
-                        ? { backgroundColor: "yellow" }
-                        : item.status === -1
-                        ? { backgroundColor: "grey" }
-                        : null,
+                      {
+                        backgroundColor: renderColor(item.status),
+                      },
                     ]}
                     key={index}
-                    onPress={() => this.props.handlePress(item.value)}
-                  >
+                    onPress={() => this.props.handlePress(item.value)}>
                     <Text style={styles.itemKeyboardContent}>{item.value}</Text>
                   </TouchableOpacity>
                 );
@@ -42,27 +33,27 @@ export class Keyboard extends Component {
 
 const styles = StyleSheet.create({
   keyboardWrapper: {
-    flexDirection: "row",
+    flexDirection: 'row',
     padding: 20,
     gap: 6,
-    flexWrap: "wrap",
-    justifyContent: "center",
-    alignItems: "center",
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   itemKeyboard: {
     borderWidth: 2,
-    borderColor: "#000",
+    borderColor: '#000',
     padding: 8,
     borderRadius: 4,
     minWidth: 30,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   itemKeyboardContent: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   keyboardRow: {
-    flexDirection: "row",
+    flexDirection: 'row',
     gap: 6,
   },
 });

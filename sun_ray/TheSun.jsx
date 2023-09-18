@@ -1,14 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 import {
   Animated,
   Button,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
   Easing,
-} from 'react-native';
-import SunRay from './SunRay';
+} from "react-native";
+import SunRay from "./SunRay";
 
 const r = 50;
 const sunRayWidth = 20;
@@ -18,7 +17,7 @@ const sunRays = Array.from({ length: (2 * (Math.PI * r)) / sunRayWidth });
 export default function TheSun() {
   const [animatedRotates] = useState(sunRays.map(() => new Animated.Value(0)));
   const [animatedTranslates] = useState(
-    sunRays.map(() => new Animated.Value(0)),
+    sunRays.map(() => new Animated.Value(0))
   );
   const [animatedSunSpin] = useState(new Animated.Value(0));
   const [isShow, setShow] = useState(false);
@@ -45,28 +44,36 @@ export default function TheSun() {
   };
 
   useEffect(() => {
-    animatedRotates.map((animation, index) => {
-      const animations = [
-        Animated.timing(animation, {
-          toValue: isShow ? 1 : 0,
-          duration,
-          easing: Easing.linear,
-          useNativeDriver: true,
-        }),
-        Animated.timing(animatedTranslates[index], {
-          toValue: isShow ? 1 : 0,
-          duration,
-          easing: Easing.linear,
-          useNativeDriver: true,
-        }),
-      ];
+    Animated.stagger(
+      duration / 5,
+      animatedRotates.map((animation, index) => {
+        const animations = [
+          Animated.timing(animation, {
+            toValue: isShow ? 1 : 0,
+            duration,
+            easing: Easing.linear,
+            useNativeDriver: true,
+          }),
+          Animated.timing(animatedTranslates[index], {
+            toValue: isShow ? 1 : 0,
+            duration,
+            easing: Easing.linear,
+            useNativeDriver: true,
+          }),
+        ];
 
-      return Animated.parallel(animations).start(({ finished }) => {
+        return Animated.parallel(animations);
+      })
+    ).start(({ finished }) => {
+      if (finished && isShow) {
         Animated.spring(animatedSunSpin, {
-          toValue: isShow && finished ? 1 : 0,
+          toValue: 1,
+          mass: 2,
           useNativeDriver: true,
-        }).start();
-      });
+        }).start(() => {
+          animatedSunSpin.setValue(0);
+        });
+      }
     });
   }, [isShow]);
   return (
@@ -85,12 +92,13 @@ export default function TheSun() {
               {
                 rotate: animatedSunSpin.interpolate({
                   inputRange: [0, 1],
-                  outputRange: ['0deg', 360 * 2 + 'deg'],
+                  outputRange: ["0deg", 360 * 2 + "deg"],
                 }),
               },
             ],
           },
-        ]}>
+        ]}
+      >
         {renderSunRay()}
 
         <View style={styles.innerSunContainer}>
@@ -107,31 +115,31 @@ export default function TheSun() {
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   container: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 50,
     width: r * 2,
     height: r * 2,
   },
   innerSunContainer: {
     borderRadius: r,
-    width: '100%',
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
   },
   innerSunBaseStyle: {
     borderRadius: r,
-    width: '80%',
-    height: '80%',
-    backgroundColor: '#ffea00',
-    position: 'absolute',
+    width: "80%",
+    height: "80%",
+    backgroundColor: "#ffea00",
+    position: "absolute",
   },
   sunTitle: {
-    color: 'purple',
-    fontWeight: 'bold',
+    color: "purple",
+    fontWeight: "bold",
   },
 });

@@ -24,14 +24,13 @@ const styles = StyleSheet.create({
   },
 });
 
-const SunRay = ({
+const SecondItem = ({
   totalSunRays,
   r,
-  sunRayWidth,
-  sunRayHeight,
+  secondWidth,
+  secondHeight,
   index,
   animationSunRayValue,
-  animationSunTailValue,
 }) => {
   const containerBaseStyle = () => {
     return [
@@ -45,7 +44,7 @@ const SunRay = ({
             translateY:
               r -
               Math.cos((index * (2 * Math.PI)) / totalSunRays) * r -
-              sunRayHeight / 2,
+              secondHeight / 2,
           },
           {
             rotate: animationSunRayValue.interpolate({
@@ -57,52 +56,33 @@ const SunRay = ({
             }),
           },
           {
-            translateY: sunRayHeight / 2,
+            translateY: secondHeight / 2,
           },
         ],
       },
     ];
   };
 
-  const sunRayBaseStyle = () => {
+  const secondItemStyle = () => {
     return [
       styles.sunRay,
       {
-        borderLeftWidth: sunRayWidth / 2,
-        borderRightWidth: sunRayWidth / 2,
-        borderTopWidth: sunRayHeight,
+        borderLeftWidth: secondWidth / 2,
+        borderRightWidth: secondWidth / 2,
+        borderTopWidth: secondHeight,
         borderTopEndRadius: r / 2,
         borderTopStartRadius: r / 2,
       },
     ];
   };
 
-  const sunTailBaseStyle = () => {
-    return [
-      styles.sunTail,
-      {
-        opacity: animationSunTailValue.interpolate({
-          inputRange: [0, 1, 2],
-          outputRange: [0, 1, 0],
-        }),
-        transform: [
-          {
-            translateY: animationSunTailValue.interpolate({
-              inputRange: [0, 1, 1.5, 2],
-              outputRange: [-100, 100, 100, 1000],
-            }),
-          },
-        ],
-      },
-    ];
-  };
+//  
 
   return (
     <Animated.View style={containerBaseStyle()}>
-      <View style={sunRayBaseStyle()} />
-      <Animated.View style={sunTailBaseStyle()} />
+      <View style={secondItemStyle()} />
     </Animated.View>
   );
 };
 
-export default SunRay;
+export default SecondItem;

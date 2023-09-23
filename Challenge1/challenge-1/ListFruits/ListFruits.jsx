@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import Ionicons from "react-native-vector-icons/Ionicons";
 import Fruit from "./Fruits/Fruit";
 import base64 from "react-native-base64";
 
@@ -58,7 +57,7 @@ export default function ListFruits() {
       <View style={styles.inputWrapper}>
         <TextInput
           style={styles.inputField}
-          placeholder="Add fruits"
+          placeholder="Add cc"
           value={newFruit}
           onChangeText={(newFruit) => setNewFruit(newFruit)}
         />
